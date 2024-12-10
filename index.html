@@ -23,6 +23,8 @@
             font-weight: bold;
             display: flex;
             gap: 0.2em;
+            flex-wrap: wrap;
+            text-align: center;
         }
         .intro span {
             opacity: 0;
@@ -93,6 +95,25 @@
             }
             100% {
                 color: #f54291;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .intro {
+                font-size: 2.5rem;
+            }
+            .link-section a img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .intro {
+                font-size: 2rem;
+            }
+            .resume {
+                font-size: 1.5rem;
             }
         }
     </style>
