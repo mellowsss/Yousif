@@ -52,14 +52,18 @@
         }
 
         .link-section a {
-            color: #4cafef;
-            text-decoration: none;
-            font-weight: bold;
+            display: inline-block;
             margin: 0 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .link-section a img {
+            width: 50px;
+            height: 50px;
         }
 
         .link-section a:hover {
-            text-decoration: underline;
+            transform: scale(1.2);
         }
 
         .fadeInSection {
@@ -95,7 +99,7 @@
 </head>
 <body>
     <div class="intro" id="nameContainer">
-        <!-- Letters will be dynamically added here -->
+        
     </div>
     <div class="resume" id="resumeSection">
         Welcome to my resume
@@ -112,16 +116,19 @@
             nameContainer.appendChild(span);
         });
 
-        // Navigate to the second page after displaying the welcome message
         setTimeout(() => {
             document.body.innerHTML = `
                 <div class="link-section fadeInSection">
                     <h1 class="animated-header">Welcome to my site!</h1>
                     <p class="fadeInSection">This is my little project during the break.</p>
                     <p class="fadeInSection" style="animation-delay: 0.5s;">Connect with me:</p>
-                    <a href="https://www.linkedin.com/in/saieby/" class="fadeInSection" style="animation-delay: 0.7s;" target="_blank">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/saieby/" class="fadeInSection" style="animation-delay: 0.7s;" target="_blank">
+                        <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn">
+                    </a>
                     <p class="fadeInSection" style="animation-delay: 1s;">Explore my work:</p>
-                    <p class="fadeInSection" style="animation-delay: 1.3s;">Officer at Code Coogs! <a href="https://codeCoogs.com" target="_blank">CodeCoogs</a>.</p>
+                    <a href="https://codeCoogs.com" class="fadeInSection" style="animation-delay: 1.3s;" target="_blank">
+                        <img src="codecoogs.ico" alt="CodeCoogs" style="width: 70px; height: 70px;">
+                    </a>
                     <p class="fadeInSection" style="animation-delay: 1.6s;">Work in Progress!</p>
                 </div>`;
         }, name.length * 300 + 2000);
