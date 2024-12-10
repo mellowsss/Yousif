@@ -39,11 +39,29 @@
             animation: fadeIn 1s ease-in-out forwards;
             animation-delay: 1s;
         }
+        .code-snippet {
+            position: absolute;
+            color: #4cafef;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            animation: floatSnippet 3s ease-in-out forwards;
+        }
 
         @keyframes fadeIn {
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes floatSnippet {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
             }
         }
 
@@ -137,7 +155,33 @@
             nameContainer.appendChild(span);
         });
 
+        function spawnCodeSnippet() {
+            const snippets = [
+                "console.log('Hello World!');",
+                "let x = 69420;",
+                "def greet():\n    return 'Joseph needs help';",
+                "for (let i = 0; i < 10; i++) {}",
+                "if (x > 10) { console.log(x); }"
+            ];
+
+            const snippet = document.createElement('div');
+            snippet.className = 'code-snippet';
+            snippet.textContent = snippets[Math.floor(Math.random() * snippets.length)];
+
+            snippet.style.left = `${Math.random() * 80 + 10}vw`;
+            snippet.style.top = `${Math.random() * 80 + 10}vh`;
+
+            document.body.appendChild(snippet);
+
+            setTimeout(() => {
+                document.body.removeChild(snippet);
+            }, 3000);
+        }
+
+        let snippetInterval = setInterval(spawnCodeSnippet, 500);
+
         setTimeout(() => {
+            clearInterval(snippetInterval);
             document.body.innerHTML = `
                 <div class="link-section fadeInSection">
                     <h1 class="animated-header">Welcome to my site!</h1>
@@ -150,9 +194,21 @@
                     <a href="https://codeCoogs.com" class="fadeInSection" style="animation-delay: 1.3s;" target="_blank">
                         <img src="codecoogs.ico" alt="CodeCoogs" style="width: 70px; height: 70px;">
                     </a>
-                    <p class="fadeInSection" style="animation-delay: 1.6s;">Work in Progress!
-                    Fix One this damn screen!</p>
+                    <p class="fadeInSection" style="animation-delay: 1.6s;">Work in Progress!</p>
                 </div>`;
+
+            const body = document.body;
+            let lastClickTime = 0;
+
+            body.addEventListener('click', (event) => {
+                if (event.target.closest('.link-section, .code-snippet')) return;
+
+                const now = Date.now();
+                if (now - lastClickTime < 100) return;
+                lastClickTime = now;
+
+                spawnCodeSnippet();
+            });
         }, name.length * 300 + 2000);
     </script>
 </body>
