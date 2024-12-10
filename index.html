@@ -61,6 +61,36 @@
         .link-section a:hover {
             text-decoration: underline;
         }
+
+        .fadeInSection {
+            opacity: 0;
+            animation: fadeInSection 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeInSection {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animated-header {
+            font-size: 2.5rem;
+            animation: colorChange 3s infinite alternate;
+        }
+
+        @keyframes colorChange {
+            0% {
+                color: #4cafef;
+            }
+            100% {
+                color: #f54291;
+            }
+        }
     </style>
 </head>
 <body>
@@ -85,14 +115,14 @@
         // Navigate to the second page after displaying the welcome message
         setTimeout(() => {
             document.body.innerHTML = `
-                <div class="link-section">
-                    <h1>Welcome to my site!</h1>
-                    <p>Here, you'll find details about my professional journey, skills, and experiences.</p>
-                    <p>Connect with me:</p>
-                    <a href="https://www.linkedin.com/in/saieby/">LinkedIn</a>
-                    <p>Explore my work:</p>
-                    <p>Officer for university club at <a href="https://codeCoogs.com" target="_blank">CodeCoogs</a>.</p>
-                    <p>It's a Work on Progress</p>
+                <div class="link-section fadeInSection">
+                    <h1 class="animated-header">Welcome to my site!</h1>
+                    <p class="fadeInSection">This is my little project during the break.</p>
+                    <p class="fadeInSection" style="animation-delay: 0.5s;">Connect with me:</p>
+                    <a href="https://www.linkedin.com/in/saieby/" class="fadeInSection" style="animation-delay: 0.7s;" target="_blank">LinkedIn</a>
+                    <p class="fadeInSection" style="animation-delay: 1s;">Explore my work:</p>
+                    <p class="fadeInSection" style="animation-delay: 1.3s;">Officer at Code Coogs! <a href="https://codeCoogs.com" target="_blank">CodeCoogs</a>.</p>
+                    <p class="fadeInSection" style="animation-delay: 1.6s;">Work in Progress!</p>
                 </div>`;
         }, name.length * 300 + 2000);
     </script>
