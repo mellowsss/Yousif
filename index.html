@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yousif's Interactive Resume</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1e1e2f;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        .intro {
+            font-size: 4rem;
+            font-weight: bold;
+            display: flex;
+            gap: 0.2em;
+        }
+        .intro span {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        .resume {
+            opacity: 0;
+            font-size: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            animation: fadeIn 1s ease-in-out forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .link-section {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .link-section a {
+            color: #4cafef;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        .link-section a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="intro" id="nameContainer">
+        <!-- Letters will be dynamically added here -->
+    </div>
+    <div class="resume" id="resumeSection">
+        Welcome to my resume
+    </div>
+
+    <script>
+        const name = "Yousif Saieb";
+        const nameContainer = document.getElementById('nameContainer');
+
+        name.split('').forEach((letter, index) => {
+            const span = document.createElement('span');
+            span.textContent = letter;
+            span.style.animationDelay = `${index * 0.3}s`;
+            nameContainer.appendChild(span);
+        });
+
+        // Navigate to the second page after displaying the welcome message
+        setTimeout(() => {
+            document.body.innerHTML = `
+                <div class="link-section">
+                    <h1>Welcome to my site!</h1>
+                    <p>Here, you'll find details about my professional journey, skills, and experiences.</p>
+                    <p>Connect with me:</p>
+                    <a href="https://www.linkedin.com/in/saieby/">LinkedIn</a>
+                    <p>Explore my work:</p>
+                    <p>Officer for university club at <a href="https://codeCoogs.com" target="_blank">CodeCoogs</a>.</p>
+                    <p>It's a Work on Progress</p>
+                </div>`;
+        }, name.length * 300 + 2000);
+    </script>
+</body>
+</html>
