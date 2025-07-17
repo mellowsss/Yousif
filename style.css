@@ -132,3 +132,61 @@ body {
                 font-size: 1.5rem;
             }
         }
+
+/* Spotify page styles */
+.spotify-body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1db954, #191414);
+    color: #fff;
+    text-align: center;
+    min-height: 100vh;
+}
+
+#app {
+    padding: 2rem;
+}
+
+#login-btn {
+    background: #1db954;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+#login-btn:hover {
+    background: #1ed760;
+}
+
+#controls {
+    margin: 1rem 0;
+}
+
+#controls select,
+#controls button {
+    margin: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 1rem;
+}
+
+.track,
+.artist {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    margin: 0.3rem 0;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.track img,
+.artist img {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+}
