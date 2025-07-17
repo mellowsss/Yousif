@@ -52,6 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <a href="todo.html" class="fadeInSection" style="animation-delay: 1.5s;" target="_blank">
                 <img src="logo.png" alt="To-Do List" style="width: 70px; height: 70px;">
             </a>
+            <p class="fadeInSection" style="animation-delay: 1.55s;">Check out my Spotify stats:</p>
+            <a href="spotify.html" class="fadeInSection" style="animation-delay: 1.6s;" target="_blank">
+                <img src="spotify.svg" alt="Spotify" style="width: 70px; height: 70px;">
+            </a>
             <p class="fadeInSection" style="animation-delay: 1.6s;">Work in Progress!</p>
             <div style="margin-top: 20px; text-align: center;">
                 <a href="https://instagram.com/mxr1yousif2/" class="fadeInSection" style="animation-delay: 1.8s;" target="_blank">
