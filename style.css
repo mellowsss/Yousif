@@ -2,3 +2,133 @@ html {
   height: 100%;
   width: 100%;
 }
+body {
+
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1e1e2f;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        .intro {
+            font-size: 4rem;
+            font-weight: bold;
+            display: flex;
+            gap: 0.2em;
+            flex-wrap: wrap;
+            text-align: center;
+        }
+        .intro span {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        .resume {
+            opacity: 0;
+            font-size: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            animation: fadeIn 1s ease-in-out forwards;
+            animation-delay: 1s;
+        }
+        .code-snippet {
+            position: absolute;
+            color: #4cafef;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            animation: floatSnippet 3s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatSnippet {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+
+        .link-section {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .link-section a {
+            display: inline-block;
+            margin: 0 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .link-section a img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .link-section a:hover {
+            transform: scale(1.2);
+        }
+
+        .fadeInSection {
+            opacity: 0;
+            animation: fadeInSection 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeInSection {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animated-header {
+            font-size: 2.5rem;
+            animation: colorChange 3s infinite alternate;
+        }
+
+        @keyframes colorChange {
+            0% {
+                color: #4cafef;
+            }
+            100% {
+                color: #f54291;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .intro {
+                font-size: 2.5rem;
+            }
+            .link-section a img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .intro {
+                font-size: 2rem;
+            }
+            .resume {
+                font-size: 1.5rem;
+            }
+        }
