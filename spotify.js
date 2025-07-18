@@ -3,6 +3,12 @@ const redirectUri = window.location.origin + window.location.pathname;
 const loginBtn = document.getElementById('login-btn');
 const clientIdInput = document.getElementById('client-id');
 const CLIENT_ID_PLACEHOLDER = 'YOUR_SPOTIFY_CLIENT_ID';
+=======
+=======
+const clientId = ''; // Replace with your Spotify client ID
+const redirectUri = window.location.origin + window.location.pathname;
+
+const loginBtn = document.getElementById('login-btn');
 const controls = document.getElementById('controls');
 const results = document.getElementById('results');
 const rangeSelect = document.getElementById('range-select');
@@ -32,6 +38,9 @@ function login() {
         alert('Enter your Spotify Client ID first.');
         return;
     }
+=======
+=======
+function login() {
     const scopes = 'user-top-read';
     const authUrl =
         `https://accounts.spotify.com/authorize?client_id=${clientId}` +
@@ -101,6 +110,29 @@ window.addEventListener('load', () => {
     if (storedId) {
         clientIdInput.value = storedId;
     }
+=======
+=======
+loadTracksBtn.addEventListener('click', async () => {
+    results.innerHTML = 'Loading...';
+    try {
+        const data = await fetchData('tracks');
+        displayTracks(data);
+    } catch (e) {
+        results.innerHTML = 'Error fetching data.';
+    }
+});
+
+loadArtistsBtn.addEventListener('click', async () => {
+    results.innerHTML = 'Loading...';
+    try {
+        const data = await fetchData('artists');
+        displayArtists(data);
+    } catch (e) {
+        results.innerHTML = 'Error fetching data.';
+    }
+});
+
+window.addEventListener('load', () => {
     token = getTokenFromHash();
     if (token) {
         // Clean the URL so the token is not visible after authentication
