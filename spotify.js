@@ -2,24 +2,21 @@ const redirectUri = window.location.origin + window.location.pathname;
 
 const loginBtn = document.getElementById('login-btn');
 const clientIdInput = document.getElementById('client-id');
-const CLIENT_ID_PLACEHOLDER = 'YOUR_SPOTIFY_CLIENT_ID';
-=======
-=======
-const clientId = ''; // Replace with your Spotify client ID
-const redirectUri = window.location.origin + window.location.pathname;
-
-const loginBtn = document.getElementById('login-btn');
 const controls = document.getElementById('controls');
 const results = document.getElementById('results');
 const rangeSelect = document.getElementById('range-select');
 const loadTracksBtn = document.getElementById('load-tracks');
 const loadArtistsBtn = document.getElementById('load-artists');
+const CLIENT_ID_PLACEHOLDER = 'YOUR_SPOTIFY_CLIENT_ID';
 let token = null;
 
-function getTokenFromHash() {
+function parseAuthHash() {
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
-    return params.get('access_token');
+    return {
+        token: params.get('access_token'),
+        error: params.get('error')
+    };
 }
 
 function getClientId() {
@@ -38,9 +35,6 @@ function login() {
         alert('Enter your Spotify Client ID first.');
         return;
     }
-=======
-=======
-function login() {
     const scopes = 'user-top-read';
     const authUrl =
         `https://accounts.spotify.com/authorize?client_id=${clientId}` +
@@ -110,30 +104,13 @@ window.addEventListener('load', () => {
     if (storedId) {
         clientIdInput.value = storedId;
     }
-=======
-=======
-loadTracksBtn.addEventListener('click', async () => {
-    results.innerHTML = 'Loading...';
-    try {
-        const data = await fetchData('tracks');
-        displayTracks(data);
-    } catch (e) {
-        results.innerHTML = 'Error fetching data.';
+    const auth = parseAuthHash();
+    token = auth.token;
+    if (auth.error) {
+        results.innerHTML =
+            'Spotify authorization error: ' + auth.error +
+            '. Ensure \"Implicit Grant\" is enabled for your app.';
     }
-});
-
-loadArtistsBtn.addEventListener('click', async () => {
-    results.innerHTML = 'Loading...';
-    try {
-        const data = await fetchData('artists');
-        displayArtists(data);
-    } catch (e) {
-        results.innerHTML = 'Error fetching data.';
-    }
-});
-
-window.addEventListener('load', () => {
-    token = getTokenFromHash();
     if (token) {
         // Clean the URL so the token is not visible after authentication
         window.location.hash = '';
