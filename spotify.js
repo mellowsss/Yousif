@@ -4,6 +4,7 @@ const loginBtn = document.getElementById('login-btn');
 const clientIdInput = document.getElementById('client-id');
 const CLIENT_ID_PLACEHOLDER = 'YOUR_SPOTIFY_CLIENT_ID';
 =======
+=======
 const clientId = ''; // Replace with your Spotify client ID
 const redirectUri = window.location.origin + window.location.pathname;
 
@@ -37,6 +38,7 @@ function login() {
         alert('Enter your Spotify Client ID first.');
         return;
     }
+=======
 =======
 function login() {
     const scopes = 'user-top-read';
@@ -109,6 +111,7 @@ window.addEventListener('load', () => {
         clientIdInput.value = storedId;
     }
 =======
+=======
 loadTracksBtn.addEventListener('click', async () => {
     results.innerHTML = 'Loading...';
     try {
@@ -137,6 +140,5 @@ window.addEventListener('load', () => {
         controls.style.display = 'block';
         loginBtn.style.display = 'none';
         showTop('tracks');
-=======
     }
 });
