@@ -10,10 +10,13 @@ const loadArtistsBtn = document.getElementById('load-artists');
 const CLIENT_ID_PLACEHOLDER = 'YOUR_SPOTIFY_CLIENT_ID';
 let token = null;
 
-function getTokenFromHash() {
+function parseAuthHash() {
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
-    return params.get('access_token');
+    return {
+        token: params.get('access_token'),
+        error: params.get('error')
+    };
 }
 
 function getClientId() {
@@ -101,6 +104,14 @@ window.addEventListener('load', () => {
     if (storedId) {
         clientIdInput.value = storedId;
     }
+    const auth = parseAuthHash();
+    token = auth.token;
+    if (auth.error) {
+        results.innerHTML =
+            'Spotify authorization error: ' + auth.error +
+            '. Ensure \"Implicit Grant\" is enabled for your app.';
+    }
+=======
     token = getTokenFromHash();
     if (token) {
         // Clean the URL so the token is not visible after authentication
