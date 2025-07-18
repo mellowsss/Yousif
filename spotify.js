@@ -16,6 +16,10 @@ function getTokenFromHash() {
 }
 
 function login() {
+    if (clientId === 'YOUR_SPOTIFY_CLIENT_ID') {
+        alert('Please replace YOUR_SPOTIFY_CLIENT_ID in spotify.js with your real Client ID.');
+        return;
+    }
     const scopes = 'user-top-read';
     const authUrl =
         `https://accounts.spotify.com/authorize?client_id=${clientId}` +
