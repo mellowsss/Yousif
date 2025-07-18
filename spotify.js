@@ -1,7 +1,7 @@
-const clientId = 'YOUR_SPOTIFY_CLIENT_ID'; // Replace with your Spotify client ID
 const redirectUri = window.location.origin + window.location.pathname;
 
 const loginBtn = document.getElementById('login-btn');
+const clientIdInput = document.getElementById('client-id');
 const controls = document.getElementById('controls');
 const results = document.getElementById('results');
 const rangeSelect = document.getElementById('range-select');
@@ -15,9 +15,20 @@ function getTokenFromHash() {
     return params.get('access_token');
 }
 
+function getClientId() {
+    const stored = localStorage.getItem('spotifyClientId');
+    const input = clientIdInput.value.trim();
+    const id = input || stored;
+    if (id && id !== stored) {
+        localStorage.setItem('spotifyClientId', id);
+    }
+    return id;
+}
+
 function login() {
-    if (clientId === 'YOUR_SPOTIFY_CLIENT_ID') {
-        alert('Please replace YOUR_SPOTIFY_CLIENT_ID in spotify.js with your real Client ID.');
+    const clientId = getClientId();
+    if (!clientId) {
+        alert('Enter your Spotify Client ID first.');
         return;
     }
     const scopes = 'user-top-read';
@@ -85,6 +96,10 @@ loadTracksBtn.addEventListener('click', () => showTop('tracks'));
 loadArtistsBtn.addEventListener('click', () => showTop('artists'));
 
 window.addEventListener('load', () => {
+    const storedId = localStorage.getItem('spotifyClientId');
+    if (storedId) {
+        clientIdInput.value = storedId;
+    }
     token = getTokenFromHash();
     if (token) {
         // Clean the URL so the token is not visible after authentication

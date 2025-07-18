@@ -5,8 +5,8 @@ This repository hosts a few small front-end projects. The newest addition is a S
 ## Spotify Setup
 1. Create a Spotify developer application at [Spotify Developer Dashboard](https://developer.spotify.com/).
 2. Add `http://localhost/spotify.html` (or whichever URL you use to serve `spotify.html`) as a redirect URI in your app settings.
-3. Copy your **Client ID** and replace the `YOUR_SPOTIFY_CLIENT_ID` placeholder in `spotify.js`. The login button warns you if you forget this step.
-4. Serve the project over HTTP (for example, `npx serve` or `python3 -m http.server`) and open `spotify.html`. Log in with Spotify when prompted.
+3. Serve the project over HTTP (for example, `npx serve` or `python3 -m http.server`) and open `spotify.html`.
+4. Enter your **Client ID** in the field on the page and log in with Spotify when prompted. The page remembers it for next time.
    Your top tracks load automatically after you authenticate.
 
 If Spotify shows an `INVALID_CLIENT` error, double-check that your client ID is correct and that the redirect URI exactly matches what you configured on the dashboard.
