@@ -113,6 +113,7 @@ window.addEventListener('load', () => {
     }
 =======
 =======
+=======
     token = getTokenFromHash();
     if (token) {
         // Clean the URL so the token is not visible after authentication
