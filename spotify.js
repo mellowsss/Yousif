@@ -111,6 +111,10 @@ window.addEventListener('load', () => {
             'Spotify authorization error: ' + auth.error +
             '. Ensure \"Implicit Grant\" is enabled for your app.';
     }
+=======
+=======
+=======
+    token = getTokenFromHash();
     if (token) {
         // Clean the URL so the token is not visible after authentication
         window.location.hash = '';
