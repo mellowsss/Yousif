@@ -1,4 +1,4 @@
-const clientId = 'YOUR_SPOTIFY_CLIENT_ID'; // Replace with your Spotify client ID
+const clientId = 'd35862ff5a9d403db6fa8a321327b7f4'; // Replace with your Spotify client ID
 const redirectUri = window.location.origin + window.location.pathname;
 
 const loginBtn = document.getElementById('login-btn');
