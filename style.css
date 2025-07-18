@@ -158,6 +158,15 @@ body {
     border-radius: 20px;
 }
 
+#client-id {
+    margin-bottom: 1rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+}
+
+=======
 #login-btn:hover {
     background: #1ed760;
 }

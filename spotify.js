@@ -1,3 +1,9 @@
+const redirectUri = window.location.origin + window.location.pathname;
+
+const loginBtn = document.getElementById('login-btn');
+const clientIdInput = document.getElementById('client-id');
+const CLIENT_ID_PLACEHOLDER = 'YOUR_SPOTIFY_CLIENT_ID';
+=======
 const clientId = ''; // Replace with your Spotify client ID
 const redirectUri = window.location.origin + window.location.pathname;
 
@@ -15,6 +21,23 @@ function getTokenFromHash() {
     return params.get('access_token');
 }
 
+function getClientId() {
+    const stored = localStorage.getItem('spotifyClientId');
+    const input = clientIdInput.value.trim();
+    const id = input || stored;
+    if (id && id !== stored) {
+        localStorage.setItem('spotifyClientId', id);
+    }
+    return id;
+}
+
+function login() {
+    const clientId = getClientId();
+    if (!clientId || clientId === CLIENT_ID_PLACEHOLDER) {
+        alert('Enter your Spotify Client ID first.');
+        return;
+    }
+=======
 function login() {
     const scopes = 'user-top-read';
     const authUrl =
@@ -63,6 +86,29 @@ function displayArtists(data) {
 
 loginBtn.addEventListener('click', login);
 
+async function showTop(type) {
+    results.innerHTML = 'Loading...';
+    try {
+        const data = await fetchData(type);
+        if (type === 'tracks') {
+            displayTracks(data);
+        } else {
+            displayArtists(data);
+        }
+    } catch (e) {
+        results.innerHTML = 'Error fetching data.';
+    }
+}
+
+loadTracksBtn.addEventListener('click', () => showTop('tracks'));
+loadArtistsBtn.addEventListener('click', () => showTop('artists'));
+
+window.addEventListener('load', () => {
+    const storedId = localStorage.getItem('spotifyClientId');
+    if (storedId) {
+        clientIdInput.value = storedId;
+    }
+=======
 loadTracksBtn.addEventListener('click', async () => {
     results.innerHTML = 'Loading...';
     try {
@@ -90,5 +136,7 @@ window.addEventListener('load', () => {
         window.location.hash = '';
         controls.style.display = 'block';
         loginBtn.style.display = 'none';
+        showTop('tracks');
+=======
     }
 });
