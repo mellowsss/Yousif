@@ -112,6 +112,7 @@ window.addEventListener('load', () => {
             '. Ensure \"Implicit Grant\" is enabled for your app.';
     }
 =======
+=======
     token = getTokenFromHash();
     if (token) {
         // Clean the URL so the token is not visible after authentication
