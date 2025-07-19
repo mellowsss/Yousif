@@ -2,11 +2,20 @@ const redirectUri = window.location.origin + window.location.pathname;
 
 const loginBtn = document.getElementById('login-btn');
 const clientIdInput = document.getElementById('client-id');
+const CLIENT_ID_PLACEHOLDER = 'YOUR_SPOTIFY_CLIENT_ID';
+=======
 const controls = document.getElementById('controls');
 const results = document.getElementById('results');
 const rangeSelect = document.getElementById('range-select');
 const loadTracksBtn = document.getElementById('load-tracks');
 const loadArtistsBtn = document.getElementById('load-artists');
+let token = null;
+
+function getTokenFromHash() {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    return params.get('access_token');
+=======
 const CLIENT_ID_PLACEHOLDER = 'YOUR_SPOTIFY_CLIENT_ID';
 let token = null;
 
@@ -35,6 +44,11 @@ function login() {
         alert('Enter your Spotify Client ID first.');
         return;
     }
+    if (window.location.protocol === 'file:') {
+        alert('Serve this page over HTTP (e.g. using `npx serve`) for Spotify login to work.');
+        return;
+    }
+=======
     const scopes = 'user-top-read';
     const authUrl =
         `https://accounts.spotify.com/authorize?client_id=${clientId}` +
@@ -104,6 +118,7 @@ window.addEventListener('load', () => {
     if (storedId) {
         clientIdInput.value = storedId;
     }
+=======
     const auth = parseAuthHash();
     token = auth.token;
     if (auth.error) {

@@ -4,6 +4,9 @@ This repository hosts a few small front-end projects. The newest addition is a S
 
 ## Spotify Setup
 1. Create a Spotify developer application at [Spotify Developer Dashboard](https://developer.spotify.com/).
+2. Add `http://localhost/spotify.html` (or whichever URL you use to serve `spotify.html`) as a redirect URI in your app settings.
+3. Serve the project over HTTP (for example, `npx serve` or `python3 -m http.server`) and open `spotify.html`. Opening the file directly from your disk won't work with Spotify login.
+=======
 2. In your app settings enable **Implicit Grant** and add `http://localhost/spotify.html` (or the GitHub Pages URL you use, e.g. `https://USERNAME.github.io/Yousif/spotify.html`) as a redirect URI.
 =======
 =======
@@ -14,6 +17,8 @@ This repository hosts a few small front-end projects. The newest addition is a S
 
 If Spotify shows an `INVALID_CLIENT` error, double-check that your client ID is correct and that the redirect URI exactly matches what you configured on the dashboard.
 
+The page lets you view your top tracks or artists over different time ranges and uses a simple vibrant theme.
+=======
 ## Implicit Grant Example
 
 This repository also includes a copy of Spotify's [Implicit Grant flow example](https://github.com/spotify/web-api-examples/tree/master/authorization/implicit_grant).
