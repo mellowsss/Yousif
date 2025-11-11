@@ -17,18 +17,20 @@
   </head>
 
   <body>
-    <div class="container">
-      <div id="login">
-        <h1>This is an example of the Implicit Grant flow</h1>
-        <button id="login-button" class="btn btn-primary">Log in with Spotify</button>
-      </div>
-      <div id="loggedin">
-        <div id="user-profile">
+    <main>
+      <div class="container">
+        <div id="login">
+          <h1>This is an example of the Implicit Grant flow</h1>
+          <button id="login-button" class="btn btn-primary">Log in with Spotify</button>
         </div>
-        <div id="oauth">
+        <div id="loggedin">
+          <div id="user-profile">
+          </div>
+          <div id="oauth">
+          </div>
         </div>
       </div>
-    </div>
+    </main>
 
     <script id="user-profile-template" type="text/x-handlebars-template">
       <h1>Logged in as {{display_name}}</h1>
@@ -59,8 +61,6 @@
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-=======
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script>
       (function() {
 

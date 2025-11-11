@@ -30,25 +30,27 @@
     </style>
 </head>
 <body>
-    <h1>Instagram Follower Tracker</h1>
-    <p>Enter the usernames of the accounts you follow and those that follow you. Each username should be on a new line.</p>
-    <div>
-        <h2>Accounts You Follow</h2>
-        <textarea id="following"></textarea>
-    </div>
-    <div>
-        <h2>Your Followers</h2>
-        <textarea id="followers"></textarea>
-    </div>
-    <button id="check-btn">Check</button>
+    <main>
+        <h1>Instagram Follower Tracker</h1>
+        <p>Enter the usernames of the accounts you follow and those that follow you. Each username should be on a new line.</p>
+        <div>
+            <h2>Accounts You Follow</h2>
+            <textarea id="following"></textarea>
+        </div>
+        <div>
+            <h2>Your Followers</h2>
+            <textarea id="followers"></textarea>
+        </div>
+        <button id="check-btn">Check</button>
 
-    <div class="results">
-        <h2>Not Following You Back</h2>
-        <ul id="not-following-back"></ul>
+        <div class="results">
+            <h2>Not Following You Back</h2>
+            <ul id="not-following-back"></ul>
 
-        <h2>You Are Not Following Back</h2>
-        <ul id="you-not-following"></ul>
-    </div>
+            <h2>You Are Not Following Back</h2>
+            <ul id="you-not-following"></ul>
+        </div>
+    </main>
 
     <script>
         document.getElementById('check-btn').addEventListener('click', () => {

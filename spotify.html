@@ -6,23 +6,38 @@
     <title>Spotify Stats</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="spotify-body">
-    <div id="app">
-        <h1 class="animated-header">Your Spotify Top 50</h1>
-        <input id="client-id" placeholder="Spotify Client ID" />
-        <button id="login-btn">Login with Spotify</button>
-        <div id="controls" style="display:none;">
-            <label for="range-select">Time Range:</label>
-            <select id="range-select">
-                <option value="short_term">Last 4 weeks</option>
-                <option value="medium_term">Last 6 months</option>
-                <option value="long_term">All time</option>
-            </select>
-            <button id="load-tracks">Top Tracks</button>
-            <button id="load-artists">Top Artists</button>
-        </div>
-        <div id="results"></div>
+<body class="spotify-body compact">
+    <div class="spotify-header">
+        <img src="spotify.svg" alt="Spotify">
+        <h1>Top 50</h1>
     </div>
+    <main id="app">
+        <h1 class="animated-header">Your Spotify Top 50</h1>
+        <p class="hint" style="max-width:720px;margin:0 auto 1rem;">
+            Log in to Spotify to view your top 50 tracks and artists.
+        </p>
+        <button id="login-btn" class="btn primary">Login with Spotify</button>
+        <div id="controls" style="display:none;">
+            <div class="toolbar">
+                <label for="range-select" class="hint">Time Range:</label>
+                <select id="range-select">
+                    <option value="short_term">Last 4 weeks</option>
+                    <option value="medium_term">Last 6 months</option>
+                    <option value="long_term">All time</option>
+                </select>
+                <button id="load-tracks" class="btn secondary">Top Tracks</button>
+                <button id="load-artists" class="btn secondary">Top Artists</button>
+                <div class="spacer"></div>
+                <button id="scale-toggle" class="btn secondary" title="Toggle density">Compact</button>
+                <button id="group-tracks" class="btn secondary">Tracks · All Groups</button>
+                <button id="group-artists" class="btn secondary">Artists · All Groups</button>
+            </div>
+        </div>
+        <div id="results" class="list"></div>
+        <p class="hint" style="margin-top:1rem;font-size:0.9rem;">
+            Using Spotify's Authorization Code flow with PKCE for secure authentication.
+        </p>
+    </main>
     <script src="spotify.js"></script>
 </body>
 </html>
