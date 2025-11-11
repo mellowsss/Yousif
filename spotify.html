@@ -6,38 +6,97 @@
     <title>Spotify Stats</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="spotify-body compact">
-    <div class="spotify-header">
-        <img src="spotify.svg" alt="Spotify">
-        <h1>Top 50</h1>
-    </div>
-    <main id="app">
-        <h1 class="animated-header">Your Spotify Top 50</h1>
-        <p class="hint" style="max-width:720px;margin:0 auto 1rem;">
-            Log in to Spotify to view your top 50 tracks and artists.
-        </p>
-        <button id="login-btn" class="btn primary">Login with Spotify</button>
-        <div id="controls" style="display:none;">
-            <div class="toolbar">
-                <label for="range-select" class="hint">Time Range:</label>
-                <select id="range-select">
-                    <option value="short_term">Last 4 weeks</option>
-                    <option value="medium_term">Last 6 months</option>
-                    <option value="long_term">All time</option>
-                </select>
-                <button id="load-tracks" class="btn secondary">Top Tracks</button>
-                <button id="load-artists" class="btn secondary">Top Artists</button>
-                <div class="spacer"></div>
-                <button id="scale-toggle" class="btn secondary" title="Toggle density">Compact</button>
-                <button id="group-tracks" class="btn secondary">Tracks · All Groups</button>
-                <button id="group-artists" class="btn secondary">Artists · All Groups</button>
+<body class="spotify-body">
+    <!-- Gradient Background -->
+    <div class="gradient-bg"></div>
+    
+    <!-- Header -->
+    <header class="spotify-header">
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="spotify.svg" alt="Spotify">
+                <h1>Top 50</h1>
             </div>
         </div>
-        <div id="results" class="list"></div>
-        <p class="hint" style="margin-top:1rem;font-size:0.9rem;">
-            Using Spotify's Authorization Code flow with PKCE for secure authentication.
-        </p>
+    </header>
+
+    <main id="app">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Your Spotify Top 50</h1>
+            <p class="hero-subtitle">Discover your most played tracks and artists</p>
+            <button id="login-btn" class="btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+                </svg>
+                Login with Spotify
+            </button>
+        </section>
+
+        <!-- Controls Section -->
+        <section id="controls" class="controls-section" style="display:none;">
+            <div class="controls-container">
+                <div class="time-range-selector">
+                    <label for="range-select" class="control-label">Time Range</label>
+                    <select id="range-select" class="select-input">
+                        <option value="short_term">Last 4 weeks</option>
+                        <option value="medium_term">Last 6 months</option>
+                        <option value="long_term">All time</option>
+                    </select>
+                </div>
+                
+                <div class="view-buttons">
+                    <button id="load-tracks" class="view-btn active">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        Top Tracks
+                    </button>
+                    <button id="load-artists" class="view-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Top Artists
+                    </button>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="group-tracks" class="action-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        Group Tracks
+                    </button>
+                    <button id="group-artists" class="action-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        Group Artists
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results" class="results-section"></section>
+
+        <!-- Footer -->
+        <footer class="footer-section">
+            <p class="footer-text">Using Spotify's Authorization Code flow with PKCE for secure authentication</p>
+        </footer>
     </main>
+
     <script src="spotify.js"></script>
 </body>
 </html>
