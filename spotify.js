@@ -137,25 +137,25 @@ async function fetchData(type) {
     return { items: [...page1.items, ...page2.items].slice(0, 100) };
 }
 
-function createCardElement(track, idx, isTrack = true) {
+function createCardElement(item, rank, isTrack = true) {
     const div = document.createElement('div');
     div.className = isTrack ? 'track' : 'artist';
     
     if (isTrack) {
-        const img = track.album.images[2]?.url || track.album.images[0]?.url || '';
-        const link = track.external_urls?.spotify || '#';
-        const preview = track.preview_url;
+        const img = item.album.images[2]?.url || item.album.images[0]?.url || '';
+        const link = item.external_urls?.spotify || '#';
+        const preview = item.preview_url;
         
         div.innerHTML = `
-            <span>${idx + 1}</span>
+            <span class="rank-number">${rank}</span>
             <a href="${link}" target="_blank" rel="noopener noreferrer">
-                <img src="${img}" alt="${track.name}" loading="lazy">
+                <img src="${img}" alt="${item.name}" loading="lazy">
             </a>
             <div class="meta">
-                <div>${track.name}</div>
-                <div>${track.artists.map(a => a.name).join(', ')}</div>
+                <div class="name">${item.name}</div>
+                <div class="artist-names">${item.artists.map(a => a.name).join(', ')}</div>
             </div>
-            ${preview ? `<button class="preview-btn" data-url="${preview}" aria-label="Preview ${track.name}">
+            ${preview ? `<button class="preview-btn" data-url="${preview}" aria-label="Preview ${item.name}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z"/>
                 </svg>
@@ -173,11 +173,11 @@ function createCardElement(track, idx, isTrack = true) {
             });
         }
     } else {
-        const img = track.images[2]?.url || track.images[0]?.url || '';
+        const img = item.images[2]?.url || item.images[0]?.url || '';
         div.innerHTML = `
-            <span>${idx + 1}</span>
-            <img src="${img}" alt="${track.name}" loading="lazy">
-            <div>${track.name}</div>
+            <span class="rank-number">${rank}</span>
+            <img src="${img}" alt="${item.name}" loading="lazy">
+            <div class="name">${item.name}</div>
         `;
     }
     
@@ -249,13 +249,14 @@ function displayTracks(data) {
     const list = results.querySelector('.list');
     
     data.items.forEach((track, idx) => {
-        const card = createCardElement(track, idx + 1, true);
+        const rank = idx + 1; // Start from 1
+        const card = createCardElement(track, rank, true);
         list.appendChild(card);
     });
     
-    // Smooth scroll to results
+    // Scroll to top smoothly
     setTimeout(() => {
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 100);
 }
 
@@ -264,13 +265,14 @@ function displayArtists(data) {
     const list = results.querySelector('.list');
     
     data.items.forEach((artist, idx) => {
-        const card = createCardElement(artist, idx + 1, false);
+        const rank = idx + 1; // Start from 1
+        const card = createCardElement(artist, rank, false);
         list.appendChild(card);
     });
     
-    // Smooth scroll to results
+    // Scroll to top smoothly
     setTimeout(() => {
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 100);
 }
 
@@ -344,7 +346,8 @@ async function showGrouped(type) {
             const data = await fetchByRange(type, r.key);
             
             data.items.forEach((item, idx) => {
-                const card = createCardElement(item, idx + 1, type === 'tracks');
+                const rank = idx + 1; // Start from 1
+                const card = createCardElement(item, rank, type === 'tracks');
                 list.appendChild(card);
             });
         }

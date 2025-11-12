@@ -147,6 +147,7 @@ html {
     color: #fff;
     min-height: 100vh;
     overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
 }
 
@@ -244,8 +245,8 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 80px);
-    padding: 40px 20px;
+    min-height: 70vh;
+    padding: 80px 20px 60px;
     position: relative;
 }
 
@@ -493,6 +494,7 @@ html {
 .results-section {
     margin: 60px 0;
     min-height: 400px;
+    padding-bottom: 40px;
 }
 
 .results-section h2 {
@@ -596,13 +598,13 @@ html {
     text-decoration: none;
 }
 
-.track span,
-.artist span {
+.rank-number {
     font-size: 1.25rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.4);
     min-width: 40px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .track img,
@@ -613,6 +615,7 @@ html {
     object-fit: cover;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 }
 
 .track:hover img,
@@ -628,7 +631,8 @@ html {
     min-width: 0;
 }
 
-.track .meta > div:first-child {
+.track .meta .name,
+.artist .name {
     font-size: 1rem;
     font-weight: 600;
     color: #fff;
@@ -637,7 +641,7 @@ html {
     text-overflow: ellipsis;
 }
 
-.track .meta > div:last-child {
+.track .meta .artist-names {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.6);
     white-space: nowrap;
@@ -645,7 +649,7 @@ html {
     text-overflow: ellipsis;
 }
 
-.artist > div:not(.meta):not(span) {
+.artist > .name {
     font-size: 1rem;
     font-weight: 600;
     color: #fff;
