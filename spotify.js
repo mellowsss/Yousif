@@ -1,15 +1,10 @@
 const redirectUri = 'https://yousif-pi.vercel.app/spotify.html';
+const CLIENT_ID = 'd35862ff5a9d403db6fa8a321327b7f4';
 
+// DOM Elements
 const loginBtn = document.getElementById('login-btn');
 const controls = document.getElementById('controls');
 const rangeSelect = document.getElementById('range-select');
-const CLIENT_ID = 'd35862ff5a9d403db6fa8a321327b7f4';
-let token = null;
-let currentAudio = null;
-let currentTab = 'tracks';
-let isRendering = false;
-
-// Tab elements
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 const tracksList = document.getElementById('tracks-list');
@@ -17,93 +12,40 @@ const artistsList = document.getElementById('artists-list');
 const groupedTracksContent = document.getElementById('grouped-tracks-content');
 const groupedArtistsContent = document.getElementById('grouped-artists-content');
 
-// Performance: Batch DOM updates
-function batchDOMUpdates(updates, batchSize = 10) {
-    return new Promise((resolve) => {
-        let index = 0;
-        
-        function processBatch() {
-            const end = Math.min(index + batchSize, updates.length);
-            
-            for (let i = index; i < end; i++) {
-                updates[i]();
-            }
-            
-            index = end;
-            
-            if (index < updates.length) {
-                setTimeout(processBatch, 0);
-            } else {
-                resolve();
-            }
-        }
-        
-        processBatch();
-    });
-}
+let token = null;
+let currentAudio = null;
+let currentTab = 'tracks';
 
-// Performance: Use requestIdleCallback with fallback
-function idleCallback(callback) {
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(callback, { timeout: 1000 });
-    } else {
-        setTimeout(callback, 0);
-    }
-}
-
-// Scroll-triggered animations with Intersection Observer
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Header scroll effect - optimized
-let scrollTimeout;
+// Simple scroll handler
+let ticking = false;
 const header = document.querySelector('.spotify-header');
 const gradientBg = document.querySelector('.gradient-bg');
 
 window.addEventListener('scroll', () => {
-    if (scrollTimeout) return;
-    
-    scrollTimeout = requestAnimationFrame(() => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-        
-        if (gradientBg) {
-            gradientBg.style.transform = `translateY(${currentScroll * 0.5}px)`;
-        }
-        
-        scrollTimeout = null;
-    });
+    if (!ticking) {
+        window.requestAnimationFrame(() => {
+            const scrollY = window.pageYOffset;
+            if (scrollY > 50) {
+                header?.classList.add('scrolled');
+            } else {
+                header?.classList.remove('scrolled');
+            }
+            if (gradientBg) {
+                gradientBg.style.transform = `translateY(${scrollY * 0.5}px)`;
+            }
+            ticking = false;
+        });
+        ticking = true;
+    }
 }, { passive: true });
 
-// Smooth scroll to top
-function smoothScrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Generate code verifier for PKCE
+// PKCE Functions
 function generateCodeVerifier() {
-    const array = new Uint32Array(56 / 2);
+    const array = new Uint32Array(28);
     crypto.getRandomValues(array);
     return Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
 }
 
-// Generate code challenge from verifier
 async function generateCodeChallenge(verifier) {
     const encoder = new TextEncoder();
     const data = encoder.encode(verifier);
@@ -114,7 +56,6 @@ async function generateCodeChallenge(verifier) {
         .replace(/=+$/, '');
 }
 
-// Parse authorization code from URL query params
 function parseAuthCode() {
     const params = new URLSearchParams(window.location.search);
     return {
@@ -123,21 +64,16 @@ function parseAuthCode() {
     };
 }
 
-// Exchange authorization code for access token
 async function exchangeCodeForToken(code, codeVerifier) {
     const response = await fetch('/api/exchange-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, code_verifier: codeVerifier })
     });
-    
     if (!response.ok) {
         const error = await response.json();
-        const err = new Error(error.error || 'Token exchange failed');
-        err.error_description = error.error_description;
-        throw err;
+        throw new Error(error.error || 'Token exchange failed');
     }
-    
     return await response.json();
 }
 
@@ -145,11 +81,9 @@ async function login() {
     const scopes = 'user-top-read';
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = await generateCodeChallenge(codeVerifier);
-    
     sessionStorage.setItem('spotify_code_verifier', codeVerifier);
     
-    const authUrl =
-        `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}` +
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}` +
         `&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}` +
         `&scope=${encodeURIComponent(scopes)}` +
         `&code_challenge=${codeChallenge}` +
@@ -158,82 +92,81 @@ async function login() {
     window.location.href = authUrl;
 }
 
-async function fetchPage(type, range, offset) {
-    const url = `https://api.spotify.com/v1/me/top/${type}?limit=50&offset=${offset}&time_range=${range}`;
-    const response = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
-    if (!response.ok) throw new Error('API error');
+// API Functions
+async function fetchTopItems(type, range, limit = 50, offset = 0) {
+    const url = `https://api.spotify.com/v1/me/top/${type}?limit=${limit}&offset=${offset}&time_range=${range}`;
+    const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch data');
     return response.json();
 }
 
-async function fetchData(type) {
-    const range = rangeSelect.value;
-    const [page1, page2] = await Promise.all([
-        fetchPage(type, range, 0),
-        fetchPage(type, range, 50)
-    ]);
-    // Ensure we get exactly 100 items starting from index 0
-    const allItems = [...page1.items, ...page2.items];
-    return { items: allItems.slice(0, 100) };
+async function fetchAllItems(type, range) {
+    // Fetch first 50 items
+    const firstPage = await fetchTopItems(type, range, 50, 0);
+    // Fetch next 50 items
+    const secondPage = await fetchTopItems(type, range, 50, 50);
+    
+    // Combine and return exactly 100 items
+    const allItems = [...(firstPage.items || []), ...(secondPage.items || [])];
+    return allItems.slice(0, 100);
 }
 
-// Create card element - optimized
-function createCardElement(item, rank, isTrack = true) {
-    const div = document.createElement('div');
-    div.className = isTrack ? 'track-card' : 'artist-card';
+// Card Creation
+function createCard(item, rank, isTrack) {
+    const card = document.createElement('div');
+    card.className = isTrack ? 'track-card' : 'artist-card';
     
     if (isTrack) {
         const img = item.album?.images?.[2]?.url || item.album?.images?.[0]?.url || '';
         const link = item.external_urls?.spotify || '#';
         const preview = item.preview_url;
+        const trackName = item.name || 'Unknown Track';
+        const artistNames = item.artists?.map(a => a.name).join(', ') || 'Unknown Artist';
         
-        div.innerHTML = `
+        card.innerHTML = `
             <div class="card-rank">${rank}</div>
             <a href="${link}" target="_blank" rel="noopener noreferrer" class="card-image-link">
-                <img src="${img}" alt="${item.name}" loading="lazy" class="card-image">
+                <img src="${img}" alt="${trackName}" class="card-image" loading="lazy">
             </a>
             <div class="card-info">
-                <div class="card-title">${item.name || 'Unknown'}</div>
-                <div class="card-subtitle">${item.artists?.map(a => a.name).join(', ') || 'Unknown Artist'}</div>
+                <div class="card-title">${trackName}</div>
+                <div class="card-subtitle">${artistNames}</div>
             </div>
-            ${preview ? `<button class="preview-btn" data-url="${preview}" data-action="preview" aria-label="Preview ${item.name}">
+            ${preview ? `<button class="preview-btn" data-url="${preview}" aria-label="Preview ${trackName}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z"/>
                 </svg>
-            </button>` : ''}
+            </button>` : '<div class="preview-btn-placeholder"></div>'}
         `;
     } else {
         const img = item.images?.[2]?.url || item.images?.[0]?.url || '';
-        div.innerHTML = `
+        const artistName = item.name || 'Unknown Artist';
+        
+        card.innerHTML = `
             <div class="card-rank">${rank}</div>
-            <img src="${img}" alt="${item.name}" loading="lazy" class="card-image">
+            <img src="${img}" alt="${artistName}" class="card-image" loading="lazy">
             <div class="card-info">
-                <div class="card-title">${item.name || 'Unknown'}</div>
+                <div class="card-title">${artistName}</div>
             </div>
+            <div class="preview-btn-placeholder"></div>
         `;
     }
     
-    // Add scroll animation
-    div.style.opacity = '0';
-    div.style.transform = 'translateY(30px) scale(0.95)';
-    observer.observe(div);
-    
-    return div;
+    return card;
 }
 
-// Event delegation for preview buttons
+// Preview Handler
 document.addEventListener('click', (e) => {
-    if (e.target.closest('.preview-btn')) {
-        e.preventDefault();
-        e.stopPropagation();
-        const btn = e.target.closest('.preview-btn');
-        const url = btn.dataset.url;
-        if (url) {
-            handlePreview(url, btn);
-        }
-    }
-});
-
-function handlePreview(url, btn) {
+    const btn = e.target.closest('.preview-btn');
+    if (!btn || !btn.dataset.url) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const url = btn.dataset.url;
+    
     if (currentAudio && currentAudio.src === url) {
         if (currentAudio.paused) {
             currentAudio.play();
@@ -254,16 +187,6 @@ function handlePreview(url, btn) {
         if (currentAudio) {
             currentAudio.pause();
             currentAudio.currentTime = 0;
-            // Update all preview buttons
-            idleCallback(() => {
-                document.querySelectorAll('.preview-btn').forEach(b => {
-                    b.innerHTML = `
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
-                    `;
-                });
-            });
         }
         
         currentAudio = new Audio(url);
@@ -282,107 +205,76 @@ function handlePreview(url, btn) {
             `;
         });
     }
-}
+});
 
-// Tab switching - optimized
+// Tab Management
 function switchTab(tabName) {
-    if (isRendering) return;
-    
     currentTab = tabName;
     
-    // Update tab buttons
     tabButtons.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === tabName);
     });
     
-    // Update tab contents
     tabContents.forEach(content => {
         content.classList.toggle('active', content.id === `tab-${tabName}`);
     });
     
-    // Load data if needed
-    idleCallback(() => {
-        if (tabName === 'tracks' && tracksList.children.length === 0) {
-            loadTracks();
-        } else if (tabName === 'artists' && artistsList.children.length === 0) {
-            loadArtists();
-        } else if (tabName === 'grouped-tracks' && groupedTracksContent.children.length === 0) {
-            loadGroupedTracks();
-        } else if (tabName === 'grouped-artists' && groupedArtistsContent.children.length === 0) {
-            loadGroupedArtists();
-        }
-    });
+    // Load data if empty
+    if (tabName === 'tracks' && tracksList.children.length === 0) {
+        loadTracks();
+    } else if (tabName === 'artists' && artistsList.children.length === 0) {
+        loadArtists();
+    } else if (tabName === 'grouped-tracks' && groupedTracksContent.children.length === 0) {
+        loadGroupedTracks();
+    } else if (tabName === 'grouped-artists' && groupedArtistsContent.children.length === 0) {
+        loadGroupedArtists();
+    }
 }
 
-// Optimized load functions with batch rendering
+// Load Functions
 async function loadTracks() {
-    if (isRendering) return;
-    isRendering = true;
-    
     tracksList.innerHTML = '<div class="loading-spinner"></div>';
     
     try {
-        const data = await fetchData('tracks');
+        const range = rangeSelect.value;
+        const items = await fetchAllItems('tracks', range);
+        
         tracksList.innerHTML = '';
         
-        // Batch render cards
-        const updates = data.items.map((track, idx) => {
-            const rank = idx + 1; // Start from 1
-            return () => {
-                const card = createCardElement(track, rank, true);
-                tracksList.appendChild(card);
-            };
+        items.forEach((track, index) => {
+            const rank = index + 1; // Start from 1
+            const card = createCard(track, rank, true);
+            tracksList.appendChild(card);
         });
         
-        await batchDOMUpdates(updates, 15);
-        smoothScrollToTop();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
         tracksList.innerHTML = '<div class="error-message">Error loading tracks. Please try again.</div>';
-    } finally {
-        isRendering = false;
     }
 }
 
 async function loadArtists() {
-    if (isRendering) return;
-    isRendering = true;
-    
     artistsList.innerHTML = '<div class="loading-spinner"></div>';
     
     try {
-        const data = await fetchData('artists');
+        const range = rangeSelect.value;
+        const items = await fetchAllItems('artists', range);
+        
         artistsList.innerHTML = '';
         
-        const updates = data.items.map((artist, idx) => {
-            const rank = idx + 1; // Start from 1
-            return () => {
-                const card = createCardElement(artist, rank, false);
-                artistsList.appendChild(card);
-            };
+        items.forEach((artist, index) => {
+            const rank = index + 1; // Start from 1
+            const card = createCard(artist, rank, false);
+            artistsList.appendChild(card);
         });
         
-        await batchDOMUpdates(updates, 15);
-        smoothScrollToTop();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
         artistsList.innerHTML = '<div class="error-message">Error loading artists. Please try again.</div>';
-    } finally {
-        isRendering = false;
     }
 }
 
-async function fetchByRange(type, range) {
-    const [page1, page2] = await Promise.all([
-        fetchPage(type, range, 0),
-        fetchPage(type, range, 50)
-    ]);
-    const allItems = [...page1.items, ...page2.items];
-    return { items: allItems.slice(0, 100) };
-}
-
 async function loadGroupedTracks() {
-    if (isRendering) return;
-    isRendering = true;
-    
     groupedTracksContent.innerHTML = '<div class="loading-spinner"></div>';
     
     const ranges = [
@@ -397,38 +289,26 @@ async function loadGroupedTracks() {
         for (const r of ranges) {
             const section = document.createElement('div');
             section.className = 'group-section';
-            section.innerHTML = `
-                <h3 class="group-title">${r.label}</h3>
-                <div class="list"></div>
-            `;
+            section.innerHTML = `<h3 class="group-title">${r.label}</h3><div class="list"></div>`;
             const list = section.querySelector('.list');
             groupedTracksContent.appendChild(section);
             
-            const data = await fetchByRange('tracks', r.key);
+            const items = await fetchAllItems('tracks', r.key);
             
-            const updates = data.items.map((item, idx) => {
-                const rank = idx + 1; // Start from 1
-                return () => {
-                    const card = createCardElement(item, rank, true);
-                    list.appendChild(card);
-                };
+            items.forEach((track, index) => {
+                const rank = index + 1; // Start from 1
+                const card = createCard(track, rank, true);
+                list.appendChild(card);
             });
-            
-            await batchDOMUpdates(updates, 15);
         }
         
-        smoothScrollToTop();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
         groupedTracksContent.innerHTML = '<div class="error-message">Error loading grouped tracks. Please try again.</div>';
-    } finally {
-        isRendering = false;
     }
 }
 
 async function loadGroupedArtists() {
-    if (isRendering) return;
-    isRendering = true;
-    
     groupedArtistsContent.innerHTML = '<div class="loading-spinner"></div>';
     
     const ranges = [
@@ -443,82 +323,66 @@ async function loadGroupedArtists() {
         for (const r of ranges) {
             const section = document.createElement('div');
             section.className = 'group-section';
-            section.innerHTML = `
-                <h3 class="group-title">${r.label}</h3>
-                <div class="list"></div>
-            `;
+            section.innerHTML = `<h3 class="group-title">${r.label}</h3><div class="list"></div>`;
             const list = section.querySelector('.list');
             groupedArtistsContent.appendChild(section);
             
-            const data = await fetchByRange('artists', r.key);
+            const items = await fetchAllItems('artists', r.key);
             
-            const updates = data.items.map((item, idx) => {
-                const rank = idx + 1; // Start from 1
-                return () => {
-                    const card = createCardElement(item, rank, false);
-                    list.appendChild(card);
-                };
+            items.forEach((artist, index) => {
+                const rank = index + 1; // Start from 1
+                const card = createCard(artist, rank, false);
+                list.appendChild(card);
             });
-            
-            await batchDOMUpdates(updates, 15);
         }
         
-        smoothScrollToTop();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
         groupedArtistsContent.innerHTML = '<div class="error-message">Error loading grouped artists. Please try again.</div>';
-    } finally {
-        isRendering = false;
     }
 }
 
-// Event listeners - optimized
+// Event Listeners
 loginBtn.addEventListener('click', login);
 
-// Tab switching with event delegation
 tabButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.preventDefault();
-        if (isRendering) return;
-        const tabName = btn.dataset.tab;
-        switchTab(tabName);
-    }, { passive: true });
+        switchTab(btn.dataset.tab);
+    });
 });
 
-// Time range change - reload current tab
-let rangeChangeTimeout;
 rangeSelect.addEventListener('change', () => {
-    if (isRendering) return;
-    
-    clearTimeout(rangeChangeTimeout);
-    rangeChangeTimeout = setTimeout(() => {
-        if (currentTab === 'tracks') {
-            tracksList.innerHTML = '';
-            loadTracks();
-        } else if (currentTab === 'artists') {
-            artistsList.innerHTML = '';
-            loadArtists();
-        } else if (currentTab === 'grouped-tracks') {
-            groupedTracksContent.innerHTML = '';
-            loadGroupedTracks();
-        } else if (currentTab === 'grouped-artists') {
-            groupedArtistsContent.innerHTML = '';
-            loadGroupedArtists();
-        }
-    }, 100);
-}, { passive: true });
+    if (currentTab === 'tracks') {
+        tracksList.innerHTML = '';
+        loadTracks();
+    } else if (currentTab === 'artists') {
+        artistsList.innerHTML = '';
+        loadArtists();
+    } else if (currentTab === 'grouped-tracks') {
+        groupedTracksContent.innerHTML = '';
+        loadGroupedTracks();
+    } else if (currentTab === 'grouped-artists') {
+        groupedArtistsContent.innerHTML = '';
+        loadGroupedArtists();
+    }
+});
 
+// Initialize
 window.addEventListener('load', async () => {
     const auth = parseAuthCode();
     
     if (auth.error) {
-        document.querySelector('.results-section').innerHTML = '<div class="error-message">Spotify authorization error: ' + auth.error + '</div>';
+        document.querySelector('.results-section').innerHTML = 
+            `<div class="error-message">Spotify authorization error: ${auth.error}</div>`;
         return;
     }
     
     if (auth.code) {
         const codeVerifier = sessionStorage.getItem('spotify_code_verifier');
         if (!codeVerifier) {
-            document.querySelector('.results-section').innerHTML = '<div class="error-message">Error: Missing code verifier. Please try logging in again.</div>';
+            document.querySelector('.results-section').innerHTML = 
+                '<div class="error-message">Error: Missing code verifier. Please try logging in again.</div>';
             return;
         }
         
@@ -526,27 +390,19 @@ window.addEventListener('load', async () => {
             const tokenData = await exchangeCodeForToken(auth.code, codeVerifier);
             token = tokenData.access_token;
             sessionStorage.removeItem('spotify_code_verifier');
-            
             window.history.replaceState({}, document.title, redirectUri);
             
             controls.style.display = 'block';
             loginBtn.style.display = 'none';
             
-            // Load initial tab
-            idleCallback(() => {
-                switchTab('tracks');
-            });
+            switchTab('tracks');
         } catch (error) {
-            let errorMsg = 'Authentication failed: ' + error.message;
-            if (error.error_description) {
-                errorMsg += '<br>' + error.error_description;
-            }
-            document.querySelector('.results-section').innerHTML = '<div class="error-message">' + errorMsg + '</div>';
+            document.querySelector('.results-section').innerHTML = 
+                `<div class="error-message">Authentication failed: ${error.message}</div>`;
         }
     }
 });
 
-// Cleanup audio on page unload
 window.addEventListener('beforeunload', () => {
     if (currentAudio) {
         currentAudio.pause();
