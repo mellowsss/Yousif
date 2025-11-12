@@ -7,6 +7,7 @@ const CLIENT_ID = 'd35862ff5a9d403db6fa8a321327b7f4';
 let token = null;
 let currentAudio = null;
 let currentTab = 'tracks';
+let isRendering = false;
 
 // Tab elements
 const tabButtons = document.querySelectorAll('.tab-btn');
@@ -16,24 +17,38 @@ const artistsList = document.getElementById('artists-list');
 const groupedTracksContent = document.getElementById('grouped-tracks-content');
 const groupedArtistsContent = document.getElementById('grouped-artists-content');
 
-// Performance optimization: Debounce function
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
+// Performance: Batch DOM updates
+function batchDOMUpdates(updates, batchSize = 10) {
+    return new Promise((resolve) => {
+        let index = 0;
+        
+        function processBatch() {
+            const end = Math.min(index + batchSize, updates.length);
+            
+            for (let i = index; i < end; i++) {
+                updates[i]();
+            }
+            
+            index = end;
+            
+            if (index < updates.length) {
+                setTimeout(processBatch, 0);
+            } else {
+                resolve();
+            }
+        }
+        
+        processBatch();
+    });
 }
 
-// Performance optimization: Use requestAnimationFrame for DOM updates
-function scheduleUpdate(callback) {
-    requestAnimationFrame(() => {
-        requestAnimationFrame(callback);
-    });
+// Performance: Use requestIdleCallback with fallback
+function idleCallback(callback) {
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(callback, { timeout: 1000 });
+    } else {
+        setTimeout(callback, 0);
+    }
 }
 
 // Scroll-triggered animations with Intersection Observer
@@ -51,34 +66,34 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// Header scroll effect
-let lastScroll = 0;
+// Header scroll effect - optimized
+let scrollTimeout;
 const header = document.querySelector('.spotify-header');
 const gradientBg = document.querySelector('.gradient-bg');
 
 window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
+    if (scrollTimeout) return;
     
-    if (currentScroll > 50) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
-    
-    if (gradientBg) {
-        const parallaxSpeed = 0.5;
-        gradientBg.style.transform = `translateY(${currentScroll * parallaxSpeed}px)`;
-    }
-    
-    lastScroll = currentScroll;
+    scrollTimeout = requestAnimationFrame(() => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+        
+        if (gradientBg) {
+            gradientBg.style.transform = `translateY(${currentScroll * 0.5}px)`;
+        }
+        
+        scrollTimeout = null;
+    });
 }, { passive: true });
 
 // Smooth scroll to top
 function smoothScrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Generate code verifier for PKCE
@@ -156,16 +171,18 @@ async function fetchData(type) {
         fetchPage(type, range, 0),
         fetchPage(type, range, 50)
     ]);
-    return { items: [...page1.items, ...page2.items].slice(0, 100) };
+    // Ensure we get exactly 100 items starting from index 0
+    const allItems = [...page1.items, ...page2.items];
+    return { items: allItems.slice(0, 100) };
 }
 
-// Create card element with optimized rendering
+// Create card element - optimized
 function createCardElement(item, rank, isTrack = true) {
     const div = document.createElement('div');
     div.className = isTrack ? 'track-card' : 'artist-card';
     
     if (isTrack) {
-        const img = item.album.images[2]?.url || item.album.images[0]?.url || '';
+        const img = item.album?.images?.[2]?.url || item.album?.images?.[0]?.url || '';
         const link = item.external_urls?.spotify || '#';
         const preview = item.preview_url;
         
@@ -175,31 +192,22 @@ function createCardElement(item, rank, isTrack = true) {
                 <img src="${img}" alt="${item.name}" loading="lazy" class="card-image">
             </a>
             <div class="card-info">
-                <div class="card-title">${item.name}</div>
-                <div class="card-subtitle">${item.artists.map(a => a.name).join(', ')}</div>
+                <div class="card-title">${item.name || 'Unknown'}</div>
+                <div class="card-subtitle">${item.artists?.map(a => a.name).join(', ') || 'Unknown Artist'}</div>
             </div>
-            ${preview ? `<button class="preview-btn" data-url="${preview}" aria-label="Preview ${item.name}">
+            ${preview ? `<button class="preview-btn" data-url="${preview}" data-action="preview" aria-label="Preview ${item.name}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z"/>
                 </svg>
             </button>` : ''}
         `;
-        
-        if (preview) {
-            const previewBtn = div.querySelector('.preview-btn');
-            previewBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handlePreview(preview, previewBtn);
-            });
-        }
     } else {
-        const img = item.images[2]?.url || item.images[0]?.url || '';
+        const img = item.images?.[2]?.url || item.images?.[0]?.url || '';
         div.innerHTML = `
             <div class="card-rank">${rank}</div>
             <img src="${img}" alt="${item.name}" loading="lazy" class="card-image">
             <div class="card-info">
-                <div class="card-title">${item.name}</div>
+                <div class="card-title">${item.name || 'Unknown'}</div>
             </div>
         `;
     }
@@ -211,6 +219,19 @@ function createCardElement(item, rank, isTrack = true) {
     
     return div;
 }
+
+// Event delegation for preview buttons
+document.addEventListener('click', (e) => {
+    if (e.target.closest('.preview-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.target.closest('.preview-btn');
+        const url = btn.dataset.url;
+        if (url) {
+            handlePreview(url, btn);
+        }
+    }
+});
 
 function handlePreview(url, btn) {
     if (currentAudio && currentAudio.src === url) {
@@ -233,12 +254,15 @@ function handlePreview(url, btn) {
         if (currentAudio) {
             currentAudio.pause();
             currentAudio.currentTime = 0;
-            document.querySelectorAll('.preview-btn').forEach(b => {
-                b.innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                `;
+            // Update all preview buttons
+            idleCallback(() => {
+                document.querySelectorAll('.preview-btn').forEach(b => {
+                    b.innerHTML = `
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    `;
+                });
             });
         }
         
@@ -260,30 +284,24 @@ function handlePreview(url, btn) {
     }
 }
 
-// Tab switching with optimized rendering
+// Tab switching - optimized
 function switchTab(tabName) {
+    if (isRendering) return;
+    
     currentTab = tabName;
     
     // Update tab buttons
     tabButtons.forEach(btn => {
-        if (btn.dataset.tab === tabName) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
     });
     
     // Update tab contents
     tabContents.forEach(content => {
-        if (content.id === `tab-${tabName}`) {
-            content.classList.add('active');
-        } else {
-            content.classList.remove('active');
-        }
+        content.classList.toggle('active', content.id === `tab-${tabName}`);
     });
     
     // Load data if needed
-    scheduleUpdate(() => {
+    idleCallback(() => {
         if (tabName === 'tracks' && tracksList.children.length === 0) {
             loadTracks();
         } else if (tabName === 'artists' && artistsList.children.length === 0) {
@@ -296,47 +314,59 @@ function switchTab(tabName) {
     });
 }
 
-// Optimized load functions
+// Optimized load functions with batch rendering
 async function loadTracks() {
+    if (isRendering) return;
+    isRendering = true;
+    
     tracksList.innerHTML = '<div class="loading-spinner"></div>';
     
     try {
         const data = await fetchData('tracks');
         tracksList.innerHTML = '';
         
-        // Use document fragment for better performance
-        const fragment = document.createDocumentFragment();
-        data.items.forEach((track, idx) => {
-            const rank = idx + 1;
-            const card = createCardElement(track, rank, true);
-            fragment.appendChild(card);
+        // Batch render cards
+        const updates = data.items.map((track, idx) => {
+            const rank = idx + 1; // Start from 1
+            return () => {
+                const card = createCardElement(track, rank, true);
+                tracksList.appendChild(card);
+            };
         });
         
-        tracksList.appendChild(fragment);
+        await batchDOMUpdates(updates, 15);
         smoothScrollToTop();
     } catch (e) {
         tracksList.innerHTML = '<div class="error-message">Error loading tracks. Please try again.</div>';
+    } finally {
+        isRendering = false;
     }
 }
 
 async function loadArtists() {
+    if (isRendering) return;
+    isRendering = true;
+    
     artistsList.innerHTML = '<div class="loading-spinner"></div>';
     
     try {
         const data = await fetchData('artists');
         artistsList.innerHTML = '';
         
-        const fragment = document.createDocumentFragment();
-        data.items.forEach((artist, idx) => {
-            const rank = idx + 1;
-            const card = createCardElement(artist, rank, false);
-            fragment.appendChild(card);
+        const updates = data.items.map((artist, idx) => {
+            const rank = idx + 1; // Start from 1
+            return () => {
+                const card = createCardElement(artist, rank, false);
+                artistsList.appendChild(card);
+            };
         });
         
-        artistsList.appendChild(fragment);
+        await batchDOMUpdates(updates, 15);
         smoothScrollToTop();
     } catch (e) {
         artistsList.innerHTML = '<div class="error-message">Error loading artists. Please try again.</div>';
+    } finally {
+        isRendering = false;
     }
 }
 
@@ -345,10 +375,14 @@ async function fetchByRange(type, range) {
         fetchPage(type, range, 0),
         fetchPage(type, range, 50)
     ]);
-    return { items: [...page1.items, ...page2.items].slice(0, 100) };
+    const allItems = [...page1.items, ...page2.items];
+    return { items: allItems.slice(0, 100) };
 }
 
 async function loadGroupedTracks() {
+    if (isRendering) return;
+    isRendering = true;
+    
     groupedTracksContent.innerHTML = '<div class="loading-spinner"></div>';
     
     const ranges = [
@@ -372,22 +406,29 @@ async function loadGroupedTracks() {
             
             const data = await fetchByRange('tracks', r.key);
             
-            const fragment = document.createDocumentFragment();
-            data.items.forEach((item, idx) => {
-                const rank = idx + 1;
-                const card = createCardElement(item, rank, true);
-                fragment.appendChild(card);
+            const updates = data.items.map((item, idx) => {
+                const rank = idx + 1; // Start from 1
+                return () => {
+                    const card = createCardElement(item, rank, true);
+                    list.appendChild(card);
+                };
             });
-            list.appendChild(fragment);
+            
+            await batchDOMUpdates(updates, 15);
         }
         
         smoothScrollToTop();
     } catch (e) {
         groupedTracksContent.innerHTML = '<div class="error-message">Error loading grouped tracks. Please try again.</div>';
+    } finally {
+        isRendering = false;
     }
 }
 
 async function loadGroupedArtists() {
+    if (isRendering) return;
+    isRendering = true;
+    
     groupedArtistsContent.innerHTML = '<div class="loading-spinner"></div>';
     
     const ranges = [
@@ -411,49 +452,60 @@ async function loadGroupedArtists() {
             
             const data = await fetchByRange('artists', r.key);
             
-            const fragment = document.createDocumentFragment();
-            data.items.forEach((item, idx) => {
-                const rank = idx + 1;
-                const card = createCardElement(item, rank, false);
-                fragment.appendChild(card);
+            const updates = data.items.map((item, idx) => {
+                const rank = idx + 1; // Start from 1
+                return () => {
+                    const card = createCardElement(item, rank, false);
+                    list.appendChild(card);
+                };
             });
-            list.appendChild(fragment);
+            
+            await batchDOMUpdates(updates, 15);
         }
         
         smoothScrollToTop();
     } catch (e) {
         groupedArtistsContent.innerHTML = '<div class="error-message">Error loading grouped artists. Please try again.</div>';
+    } finally {
+        isRendering = false;
     }
 }
 
-// Event listeners with debouncing
+// Event listeners - optimized
 loginBtn.addEventListener('click', login);
 
-// Tab switching
+// Tab switching with event delegation
 tabButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.preventDefault();
+        if (isRendering) return;
         const tabName = btn.dataset.tab;
         switchTab(tabName);
-    });
+    }, { passive: true });
 });
 
 // Time range change - reload current tab
-rangeSelect.addEventListener('change', debounce(() => {
-    if (currentTab === 'tracks') {
-        tracksList.innerHTML = '';
-        loadTracks();
-    } else if (currentTab === 'artists') {
-        artistsList.innerHTML = '';
-        loadArtists();
-    } else if (currentTab === 'grouped-tracks') {
-        groupedTracksContent.innerHTML = '';
-        loadGroupedTracks();
-    } else if (currentTab === 'grouped-artists') {
-        groupedArtistsContent.innerHTML = '';
-        loadGroupedArtists();
-    }
-}, 300));
+let rangeChangeTimeout;
+rangeSelect.addEventListener('change', () => {
+    if (isRendering) return;
+    
+    clearTimeout(rangeChangeTimeout);
+    rangeChangeTimeout = setTimeout(() => {
+        if (currentTab === 'tracks') {
+            tracksList.innerHTML = '';
+            loadTracks();
+        } else if (currentTab === 'artists') {
+            artistsList.innerHTML = '';
+            loadArtists();
+        } else if (currentTab === 'grouped-tracks') {
+            groupedTracksContent.innerHTML = '';
+            loadGroupedTracks();
+        } else if (currentTab === 'grouped-artists') {
+            groupedArtistsContent.innerHTML = '';
+            loadGroupedArtists();
+        }
+    }, 100);
+}, { passive: true });
 
 window.addEventListener('load', async () => {
     const auth = parseAuthCode();
@@ -481,7 +533,9 @@ window.addEventListener('load', async () => {
             loginBtn.style.display = 'none';
             
             // Load initial tab
-            switchTab('tracks');
+            idleCallback(() => {
+                switchTab('tracks');
+            });
         } catch (error) {
             let errorMsg = 'Authentication failed: ' + error.message;
             if (error.error_description) {
