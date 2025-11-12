@@ -2,16 +2,39 @@ const redirectUri = 'https://yousif-pi.vercel.app/spotify.html';
 
 const loginBtn = document.getElementById('login-btn');
 const controls = document.getElementById('controls');
-const results = document.getElementById('results');
 const rangeSelect = document.getElementById('range-select');
-const loadTracksBtn = document.getElementById('load-tracks');
-const loadArtistsBtn = document.getElementById('load-artists');
-const groupTracksBtn = document.getElementById('group-tracks');
-const groupArtistsBtn = document.getElementById('group-artists');
-const header = document.querySelector('.spotify-header');
 const CLIENT_ID = 'd35862ff5a9d403db6fa8a321327b7f4';
 let token = null;
 let currentAudio = null;
+let currentTab = 'tracks';
+
+// Tab elements
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+const tracksList = document.getElementById('tracks-list');
+const artistsList = document.getElementById('artists-list');
+const groupedTracksContent = document.getElementById('grouped-tracks-content');
+const groupedArtistsContent = document.getElementById('grouped-artists-content');
+
+// Performance optimization: Debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Performance optimization: Use requestAnimationFrame for DOM updates
+function scheduleUpdate(callback) {
+    requestAnimationFrame(() => {
+        requestAnimationFrame(callback);
+    });
+}
 
 // Scroll-triggered animations with Intersection Observer
 const observerOptions = {
@@ -28,21 +51,20 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// Header scroll effect and parallax
+// Header scroll effect
 let lastScroll = 0;
+const header = document.querySelector('.spotify-header');
 const gradientBg = document.querySelector('.gradient-bg');
 
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
     
-    // Header effect
     if (currentScroll > 50) {
         header.classList.add('scrolled');
     } else {
         header.classList.remove('scrolled');
     }
     
-    // Parallax effect for gradient background
     if (gradientBg) {
         const parallaxSpeed = 0.5;
         gradientBg.style.transform = `translateY(${currentScroll * parallaxSpeed}px)`;
@@ -137,9 +159,10 @@ async function fetchData(type) {
     return { items: [...page1.items, ...page2.items].slice(0, 100) };
 }
 
+// Create card element with optimized rendering
 function createCardElement(item, rank, isTrack = true) {
     const div = document.createElement('div');
-    div.className = isTrack ? 'track' : 'artist';
+    div.className = isTrack ? 'track-card' : 'artist-card';
     
     if (isTrack) {
         const img = item.album.images[2]?.url || item.album.images[0]?.url || '';
@@ -147,23 +170,21 @@ function createCardElement(item, rank, isTrack = true) {
         const preview = item.preview_url;
         
         div.innerHTML = `
-            <span class="rank-number">${rank}</span>
-            <a href="${link}" target="_blank" rel="noopener noreferrer">
-                <img src="${img}" alt="${item.name}" loading="lazy">
+            <div class="card-rank">${rank}</div>
+            <a href="${link}" target="_blank" rel="noopener noreferrer" class="card-image-link">
+                <img src="${img}" alt="${item.name}" loading="lazy" class="card-image">
             </a>
-            <div class="meta">
-                <div class="name">${item.name}</div>
-                <div class="artist-names">${item.artists.map(a => a.name).join(', ')}</div>
+            <div class="card-info">
+                <div class="card-title">${item.name}</div>
+                <div class="card-subtitle">${item.artists.map(a => a.name).join(', ')}</div>
             </div>
             ${preview ? `<button class="preview-btn" data-url="${preview}" aria-label="Preview ${item.name}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z"/>
                 </svg>
-                Preview
             </button>` : ''}
         `;
         
-        // Add preview functionality
         if (preview) {
             const previewBtn = div.querySelector('.preview-btn');
             previewBtn.addEventListener('click', (e) => {
@@ -175,9 +196,11 @@ function createCardElement(item, rank, isTrack = true) {
     } else {
         const img = item.images[2]?.url || item.images[0]?.url || '';
         div.innerHTML = `
-            <span class="rank-number">${rank}</span>
-            <img src="${img}" alt="${item.name}" loading="lazy">
-            <div class="name">${item.name}</div>
+            <div class="card-rank">${rank}</div>
+            <img src="${img}" alt="${item.name}" loading="lazy" class="card-image">
+            <div class="card-info">
+                <div class="card-title">${item.name}</div>
+            </div>
         `;
     }
     
@@ -197,7 +220,6 @@ function handlePreview(url, btn) {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
                 </svg>
-                Pause
             `;
         } else {
             currentAudio.pause();
@@ -205,11 +227,9 @@ function handlePreview(url, btn) {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z"/>
                 </svg>
-                Preview
             `;
         }
     } else {
-        // Stop current audio
         if (currentAudio) {
             currentAudio.pause();
             currentAudio.currentTime = 0;
@@ -218,19 +238,16 @@ function handlePreview(url, btn) {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 5v14l11-7z"/>
                     </svg>
-                    Preview
                 `;
             });
         }
         
-        // Play new audio
         currentAudio = new Audio(url);
         currentAudio.play();
         btn.innerHTML = `
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
             </svg>
-            Pause
         `;
         
         currentAudio.addEventListener('ended', () => {
@@ -238,83 +255,90 @@ function handlePreview(url, btn) {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z"/>
                 </svg>
-                Preview
             `;
         });
     }
 }
 
-function displayTracks(data) {
-    results.innerHTML = '<h2>Top 100 Tracks</h2><div class="list"></div>';
-    const list = results.querySelector('.list');
+// Tab switching with optimized rendering
+function switchTab(tabName) {
+    currentTab = tabName;
     
-    data.items.forEach((track, idx) => {
-        const rank = idx + 1; // Start from 1
-        const card = createCardElement(track, rank, true);
-        list.appendChild(card);
+    // Update tab buttons
+    tabButtons.forEach(btn => {
+        if (btn.dataset.tab === tabName) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
     });
     
-    // Scroll to top smoothly
-    setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 100);
-}
-
-function displayArtists(data) {
-    results.innerHTML = '<h2>Top 100 Artists</h2><div class="list"></div>';
-    const list = results.querySelector('.list');
-    
-    data.items.forEach((artist, idx) => {
-        const rank = idx + 1; // Start from 1
-        const card = createCardElement(artist, rank, false);
-        list.appendChild(card);
+    // Update tab contents
+    tabContents.forEach(content => {
+        if (content.id === `tab-${tabName}`) {
+            content.classList.add('active');
+        } else {
+            content.classList.remove('active');
+        }
     });
     
-    // Scroll to top smoothly
-    setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 100);
+    // Load data if needed
+    scheduleUpdate(() => {
+        if (tabName === 'tracks' && tracksList.children.length === 0) {
+            loadTracks();
+        } else if (tabName === 'artists' && artistsList.children.length === 0) {
+            loadArtists();
+        } else if (tabName === 'grouped-tracks' && groupedTracksContent.children.length === 0) {
+            loadGroupedTracks();
+        } else if (tabName === 'grouped-artists' && groupedArtistsContent.children.length === 0) {
+            loadGroupedArtists();
+        }
+    });
 }
 
-loginBtn.addEventListener('click', login);
-
-async function showTop(type) {
-    results.classList.add('loading');
-    results.innerHTML = '';
-    smoothScrollToTop();
+// Optimized load functions
+async function loadTracks() {
+    tracksList.innerHTML = '<div class="loading-spinner"></div>';
     
     try {
-        const data = await fetchData(type);
-        results.classList.remove('loading');
+        const data = await fetchData('tracks');
+        tracksList.innerHTML = '';
         
-        if (type === 'tracks') {
-            displayTracks(data);
-        } else {
-            displayArtists(data);
-        }
+        // Use document fragment for better performance
+        const fragment = document.createDocumentFragment();
+        data.items.forEach((track, idx) => {
+            const rank = idx + 1;
+            const card = createCardElement(track, rank, true);
+            fragment.appendChild(card);
+        });
+        
+        tracksList.appendChild(fragment);
+        smoothScrollToTop();
     } catch (e) {
-        results.classList.remove('loading');
-        results.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">Error fetching data. Please try again.</div>';
+        tracksList.innerHTML = '<div class="error-message">Error loading tracks. Please try again.</div>';
     }
 }
 
-function setActive(btn) {
-    [loadTracksBtn, loadArtistsBtn].forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+async function loadArtists() {
+    artistsList.innerHTML = '<div class="loading-spinner"></div>';
+    
+    try {
+        const data = await fetchData('artists');
+        artistsList.innerHTML = '';
+        
+        const fragment = document.createDocumentFragment();
+        data.items.forEach((artist, idx) => {
+            const rank = idx + 1;
+            const card = createCardElement(artist, rank, false);
+            fragment.appendChild(card);
+        });
+        
+        artistsList.appendChild(fragment);
+        smoothScrollToTop();
+    } catch (e) {
+        artistsList.innerHTML = '<div class="error-message">Error loading artists. Please try again.</div>';
+    }
 }
-
-loadTracksBtn.addEventListener('click', () => { 
-    setActive(loadTracksBtn); 
-    showTop('tracks'); 
-});
-
-loadArtistsBtn.addEventListener('click', () => { 
-    setActive(loadArtistsBtn); 
-    showTop('artists'); 
-});
-
-groupTracksBtn.addEventListener('click', () => showGrouped('tracks'));
-groupArtistsBtn.addEventListener('click', () => showGrouped('artists'));
 
 async function fetchByRange(type, range) {
     const [page1, page2] = await Promise.all([
@@ -324,10 +348,8 @@ async function fetchByRange(type, range) {
     return { items: [...page1.items, ...page2.items].slice(0, 100) };
 }
 
-async function showGrouped(type) {
-    results.innerHTML = '';
-    results.classList.add('loading');
-    smoothScrollToTop();
+async function loadGroupedTracks() {
+    groupedTracksContent.innerHTML = '<div class="loading-spinner"></div>';
     
     const ranges = [
         { key: 'short_term', label: 'Last 4 weeks' },
@@ -336,71 +358,136 @@ async function showGrouped(type) {
     ];
     
     try {
+        groupedTracksContent.innerHTML = '';
+        
         for (const r of ranges) {
             const section = document.createElement('div');
             section.className = 'group-section';
-            section.innerHTML = `<h2>${type === 'tracks' ? 'Top Tracks' : 'Top Artists'} — ${r.label}</h2><div class="list"></div>`;
+            section.innerHTML = `
+                <h3 class="group-title">${r.label}</h3>
+                <div class="list"></div>
+            `;
             const list = section.querySelector('.list');
-            results.appendChild(section);
+            groupedTracksContent.appendChild(section);
             
-            const data = await fetchByRange(type, r.key);
+            const data = await fetchByRange('tracks', r.key);
             
+            const fragment = document.createDocumentFragment();
             data.items.forEach((item, idx) => {
-                const rank = idx + 1; // Start from 1
-                const card = createCardElement(item, rank, type === 'tracks');
-                list.appendChild(card);
+                const rank = idx + 1;
+                const card = createCardElement(item, rank, true);
+                fragment.appendChild(card);
             });
+            list.appendChild(fragment);
         }
         
-        results.classList.remove('loading');
-        
-        // Smooth scroll to first section
-        setTimeout(() => {
-            const firstSection = results.querySelector('.group-section');
-            if (firstSection) {
-                firstSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
+        smoothScrollToTop();
     } catch (e) {
-        results.classList.remove('loading');
-        results.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">Error fetching data. Please try again.</div>';
+        groupedTracksContent.innerHTML = '<div class="error-message">Error loading grouped tracks. Please try again.</div>';
     }
 }
+
+async function loadGroupedArtists() {
+    groupedArtistsContent.innerHTML = '<div class="loading-spinner"></div>';
+    
+    const ranges = [
+        { key: 'short_term', label: 'Last 4 weeks' },
+        { key: 'medium_term', label: 'Last 6 months' },
+        { key: 'long_term', label: 'All time' }
+    ];
+    
+    try {
+        groupedArtistsContent.innerHTML = '';
+        
+        for (const r of ranges) {
+            const section = document.createElement('div');
+            section.className = 'group-section';
+            section.innerHTML = `
+                <h3 class="group-title">${r.label}</h3>
+                <div class="list"></div>
+            `;
+            const list = section.querySelector('.list');
+            groupedArtistsContent.appendChild(section);
+            
+            const data = await fetchByRange('artists', r.key);
+            
+            const fragment = document.createDocumentFragment();
+            data.items.forEach((item, idx) => {
+                const rank = idx + 1;
+                const card = createCardElement(item, rank, false);
+                fragment.appendChild(card);
+            });
+            list.appendChild(fragment);
+        }
+        
+        smoothScrollToTop();
+    } catch (e) {
+        groupedArtistsContent.innerHTML = '<div class="error-message">Error loading grouped artists. Please try again.</div>';
+    }
+}
+
+// Event listeners with debouncing
+loginBtn.addEventListener('click', login);
+
+// Tab switching
+tabButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tabName = btn.dataset.tab;
+        switchTab(tabName);
+    });
+});
+
+// Time range change - reload current tab
+rangeSelect.addEventListener('change', debounce(() => {
+    if (currentTab === 'tracks') {
+        tracksList.innerHTML = '';
+        loadTracks();
+    } else if (currentTab === 'artists') {
+        artistsList.innerHTML = '';
+        loadArtists();
+    } else if (currentTab === 'grouped-tracks') {
+        groupedTracksContent.innerHTML = '';
+        loadGroupedTracks();
+    } else if (currentTab === 'grouped-artists') {
+        groupedArtistsContent.innerHTML = '';
+        loadGroupedArtists();
+    }
+}, 300));
 
 window.addEventListener('load', async () => {
     const auth = parseAuthCode();
     
     if (auth.error) {
-        results.innerHTML = '<div style="text-align: center; padding: 40px; color: #ff4444;">Spotify authorization error: ' + auth.error + '</div>';
+        document.querySelector('.results-section').innerHTML = '<div class="error-message">Spotify authorization error: ' + auth.error + '</div>';
         return;
     }
     
     if (auth.code) {
         const codeVerifier = sessionStorage.getItem('spotify_code_verifier');
         if (!codeVerifier) {
-            results.innerHTML = '<div style="text-align: center; padding: 40px; color: #ff4444;">Error: Missing code verifier. Please try logging in again.</div>';
+            document.querySelector('.results-section').innerHTML = '<div class="error-message">Error: Missing code verifier. Please try logging in again.</div>';
             return;
         }
         
         try {
-            results.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">Authenticating...</div>';
             const tokenData = await exchangeCodeForToken(auth.code, codeVerifier);
             token = tokenData.access_token;
             sessionStorage.removeItem('spotify_code_verifier');
             
-            // Clean the URL
             window.history.replaceState({}, document.title, redirectUri);
             
             controls.style.display = 'block';
             loginBtn.style.display = 'none';
-            results.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7); font-size: 1.1rem;">Choose a view: Top Tracks or Top Artists</div>';
-            smoothScrollToTop();
+            
+            // Load initial tab
+            switchTab('tracks');
         } catch (error) {
             let errorMsg = 'Authentication failed: ' + error.message;
             if (error.error_description) {
                 errorMsg += '<br>' + error.error_description;
             }
-            results.innerHTML = '<div style="text-align: center; padding: 40px; color: #ff4444;">' + errorMsg + '</div>';
+            document.querySelector('.results-section').innerHTML = '<div class="error-message">' + errorMsg + '</div>';
         }
     }
 });

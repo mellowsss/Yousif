@@ -44,61 +44,93 @@
 
         <!-- Controls Section -->
         <section id="controls" class="controls-section" style="display:none;">
-            <div class="controls-container">
-                <div class="time-range-selector">
-                    <label for="range-select" class="control-label">Time Range</label>
-                    <select id="range-select" class="select-input">
-                        <option value="short_term">Last 4 weeks</option>
-                        <option value="medium_term">Last 6 months</option>
-                        <option value="long_term">All time</option>
-                    </select>
-                </div>
-                
-                <div class="view-buttons">
-                    <button id="load-tracks" class="view-btn active">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 18V5l12-2v13"></path>
-                            <circle cx="6" cy="18" r="3"></circle>
-                            <circle cx="18" cy="16" r="3"></circle>
-                        </svg>
-                        Top Tracks
-                    </button>
-                    <button id="load-artists" class="view-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        Top Artists
-                    </button>
-                </div>
+            <div class="time-range-container">
+                <label for="range-select" class="control-label">Time Range</label>
+                <select id="range-select" class="select-input">
+                    <option value="short_term">Last 4 weeks</option>
+                    <option value="medium_term">Last 6 months</option>
+                    <option value="long_term">All time</option>
+                </select>
+            </div>
 
-                <div class="action-buttons">
-                    <button id="group-tracks" class="action-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                        </svg>
-                        Group Tracks
-                    </button>
-                    <button id="group-artists" class="action-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                        </svg>
-                        Group Artists
-                    </button>
-                </div>
+            <!-- Tab Navigation -->
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="tracks">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                    <span>Top Tracks</span>
+                </button>
+                <button class="tab-btn" data-tab="artists">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <span>Top Artists</span>
+                </button>
+                <button class="tab-btn" data-tab="grouped-tracks">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Grouped Tracks</span>
+                </button>
+                <button class="tab-btn" data-tab="grouped-artists">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Grouped Artists</span>
+                </button>
             </div>
         </section>
 
-        <!-- Results Section -->
-        <section id="results" class="results-section"></section>
+        <!-- Tab Content Sections -->
+        <section id="results" class="results-section">
+            <!-- Top Tracks Tab -->
+            <div class="tab-content active" id="tab-tracks">
+                <div class="content-header">
+                    <h2>Top 100 Tracks</h2>
+                    <p class="content-subtitle">Your most played tracks</p>
+                </div>
+                <div class="list" id="tracks-list"></div>
+            </div>
+
+            <!-- Top Artists Tab -->
+            <div class="tab-content" id="tab-artists">
+                <div class="content-header">
+                    <h2>Top 100 Artists</h2>
+                    <p class="content-subtitle">Your most played artists</p>
+                </div>
+                <div class="list" id="artists-list"></div>
+            </div>
+
+            <!-- Grouped Tracks Tab -->
+            <div class="tab-content" id="tab-grouped-tracks">
+                <div class="content-header">
+                    <h2>Grouped Tracks</h2>
+                    <p class="content-subtitle">Compare tracks across different time periods</p>
+                </div>
+                <div id="grouped-tracks-content"></div>
+            </div>
+
+            <!-- Grouped Artists Tab -->
+            <div class="tab-content" id="tab-grouped-artists">
+                <div class="content-header">
+                    <h2>Grouped Artists</h2>
+                    <p class="content-subtitle">Compare artists across different time periods</p>
+                </div>
+                <div id="grouped-artists-content"></div>
+            </div>
+        </section>
 
         <!-- Footer -->
         <footer class="footer-section">
