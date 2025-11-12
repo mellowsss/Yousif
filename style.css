@@ -208,9 +208,10 @@ html {
 }
 
 .header-content {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
+    width: 100%;
 }
 
 .logo-container {
@@ -236,9 +237,10 @@ html {
 #app {
     position: relative;
     z-index: 1;
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0;
+    width: 100%;
 }
 
 /* Hero Section - Spotify Style */
@@ -305,16 +307,17 @@ html {
 
 /* Controls Section */
 .controls-section {
-    margin: 60px 0 40px;
+    margin: 40px 0 30px;
     opacity: 0;
     animation: fadeInUp 0.8s ease 0.2s forwards;
+    padding: 0 24px;
 }
 
 .time-range-container {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
     align-items: center;
 }
 
@@ -357,7 +360,7 @@ html {
     gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 0 20px;
+    padding: 0;
 }
 
 .tab-btn {
@@ -394,11 +397,12 @@ html {
 
 /* Results Section */
 .results-section {
-    margin: 40px 0;
+    margin: 0;
     min-height: 400px;
-    padding-bottom: 80px;
+    padding: 0 24px 80px;
     position: relative;
     z-index: 1;
+    width: 100%;
 }
 
 /* Tab Content */
@@ -419,7 +423,8 @@ html {
 .content-header {
     text-align: left;
     margin-bottom: 24px;
-    padding: 0 16px;
+    padding: 0;
+    max-width: 100%;
 }
 
 .content-header h2 {
@@ -443,7 +448,9 @@ html {
     flex-direction: column;
     gap: 0;
     margin-top: 0;
-    padding: 0 16px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
 }
 
 /* Track/Artist Cards - Spotify Style */
@@ -453,11 +460,13 @@ html {
     align-items: center;
     gap: 16px;
     background: transparent;
-    padding: 8px 16px;
+    padding: 8px 12px;
     border-radius: 4px;
     transition: background-color 0.2s ease;
     cursor: pointer;
     position: relative;
+    width: 100%;
+    max-width: 100%;
 }
 
 .track-card:hover,
@@ -566,11 +575,16 @@ html {
     margin-bottom: 60px;
     opacity: 0;
     animation: fadeInUp 0.6s ease forwards;
+    width: 100%;
 }
 
 .group-section:nth-child(1) { animation-delay: 0.1s; }
 .group-section:nth-child(2) { animation-delay: 0.2s; }
 .group-section:nth-child(3) { animation-delay: 0.3s; }
+
+.group-section .list {
+    padding: 0;
+}
 
 .group-title {
     font-size: 1.5rem;
@@ -602,10 +616,13 @@ html {
 /* Footer */
 .footer-section {
     text-align: center;
-    padding: 40px 20px;
+    padding: 40px 24px;
     margin-top: 80px;
     opacity: 0;
     animation: fadeInUp 0.8s ease 0.4s forwards;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .footer-text {
