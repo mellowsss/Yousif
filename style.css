@@ -154,25 +154,9 @@ body {
     overflow: hidden;
 }
 
-.project-card-featured {
-    background: linear-gradient(135deg, rgba(29, 185, 84, 0.15), rgba(30, 215, 96, 0.1));
-    border: 2px solid rgba(29, 185, 84, 0.3);
-    order: -1;
-}
-
-.project-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: linear-gradient(135deg, #1db954, #1ed760);
-    color: #000000;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+.project-icon-extension svg {
+    width: 100%;
+    height: 100%;
 }
 
 .project-card::before {
@@ -215,6 +199,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    border-radius: 8px;
 }
 
 .project-icon svg {
