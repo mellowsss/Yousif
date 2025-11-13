@@ -154,6 +154,27 @@ body {
     overflow: hidden;
 }
 
+.project-card-featured {
+    background: linear-gradient(135deg, rgba(29, 185, 84, 0.15), rgba(30, 215, 96, 0.1));
+    border: 2px solid rgba(29, 185, 84, 0.3);
+    order: -1;
+}
+
+.project-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #1db954, #1ed760);
+    color: #000000;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+}
+
 .project-card::before {
     content: '';
     position: absolute;
@@ -1422,5 +1443,189 @@ body {
 
     .stats-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================================
+   Extension Page - Follower Tracker
+   ============================================================================ */
+
+.extension-hero {
+    text-align: center;
+    margin-bottom: 48px;
+    padding: 40px 0;
+}
+
+.extension-icon {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(29, 185, 84, 0.2), rgba(30, 215, 96, 0.15));
+    border-radius: 50%;
+    color: #1db954;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.extension-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    margin: 0 0 12px;
+    background: linear-gradient(135deg, #ffffff 0%, #1db954 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+}
+
+.extension-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-weight: 400;
+}
+
+.extension-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-4px);
+}
+
+.info-card.highlight {
+    background: linear-gradient(135deg, rgba(29, 185, 84, 0.15), rgba(30, 215, 96, 0.1));
+    border-color: rgba(29, 185, 84, 0.3);
+}
+
+.info-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: #ffffff;
+}
+
+.info-description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    line-height: 1.6;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.features-list li {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    padding-left: 8px;
+    line-height: 1.5;
+}
+
+.extension-cta {
+    text-align: center;
+    padding: 48px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    margin-bottom: 32px;
+}
+
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #1db954, #1ed760);
+    color: #000000;
+    padding: 18px 40px;
+    border-radius: 12px;
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(29, 185, 84, 0.3);
+}
+
+.cta-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(29, 185, 84, 0.4);
+}
+
+.cta-button:active {
+    transform: translateY(-2px);
+}
+
+.cta-note {
+    margin-top: 16px;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.back-link {
+    text-align: center;
+    margin-top: 48px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+    .extension-hero {
+        padding: 32px 0;
+    }
+
+    .extension-icon {
+        width: 100px;
+        height: 100px;
+    }
+
+    .info-card {
+        padding: 24px;
+    }
+
+    .cta-button {
+        padding: 16px 32px;
+        font-size: 1rem;
     }
 }
