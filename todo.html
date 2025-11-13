@@ -3,79 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple To-Do List</title>
+    <title>Task Quest - Gamified To-Do</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            padding: 2rem;
-            background: #f5f5f5;
-            color: #333;
-            font-family: Arial, sans-serif;
-        }
-        h1 {
-            text-align: center;
-        }
-        #todo-input {
-            width: 80%;
-            padding: 0.5rem;
-            font-size: 1rem;
-        }
-        #add-btn {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            margin-left: 0.5rem;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            padding: 0.5rem 0;
-            display: flex;
-            justify-content: space-between;
-        }
-        li.completed span {
-            text-decoration: line-through;
-            color: #888;
-        }
-    </style>
+    <link rel="icon" href="logo.png" type="image/png">
 </head>
-<body>
-    <main>
-        <h1>Simple To-Do List</h1>
-        <p style="text-align:center;"><a href="followers.html">Instagram Follower Tracker</a></p>
-        <div>
-            <input id="todo-input" type="text" placeholder="Add a task">
-            <button id="add-btn">Add</button>
+<body class="todo-body">
+    <div class="todo-background"></div>
+    
+    <header class="todo-header">
+        <div class="header-wrapper">
+            <h1 class="todo-title">🎯 Task Quest</h1>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-label">Completed</span>
+                    <span class="stat-value" id="completed-count">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Streak</span>
+                    <span class="stat-value streak" id="streak-count">🔥 0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Level</span>
+                    <span class="stat-value" id="level">1</span>
+                </div>
+            </div>
         </div>
-        <ul id="todo-list"></ul>
+    </header>
+
+    <main class="todo-main">
+        <div class="todo-container">
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="todo-input" 
+                        class="todo-input" 
+                        placeholder="What quest will you complete today?"
+                        autocomplete="off"
+                    >
+                    <button id="add-btn" class="add-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        <span>Add Quest</span>
+                    </button>
+                </div>
+                
+                <!-- Priority Selector -->
+                <div class="priority-selector">
+                    <button class="priority-btn active" data-priority="normal">
+                        <span>⚪</span> Normal
+                    </button>
+                    <button class="priority-btn" data-priority="important">
+                        <span>🟡</span> Important
+                    </button>
+                    <button class="priority-btn" data-priority="urgent">
+                        <span>🔴</span> Urgent
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span class="progress-label">Quest Progress</span>
+                    <span class="progress-percent" id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-btn active" data-filter="all">All Quests</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+            </div>
+
+            <!-- Tasks List -->
+            <div class="tasks-container">
+                <ul class="tasks-list" id="todo-list"></ul>
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-icon">✨</div>
+                    <p class="empty-text">No quests yet! Start your adventure!</p>
+                </div>
+            </div>
+
+            <!-- Achievement Badge (appears on completion) -->
+            <div class="achievement-badge" id="achievement-badge">
+                <div class="achievement-content">
+                    <div class="achievement-icon">🏆</div>
+                    <div class="achievement-text">
+                        <div class="achievement-title">Achievement Unlocked!</div>
+                        <div class="achievement-desc" id="achievement-desc"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Modal -->
+        <div class="stats-modal" id="stats-modal">
+            <div class="modal-content">
+                <button class="modal-close" id="modal-close">×</button>
+                <h2 class="modal-title">📊 Your Stats</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-number" id="stat-completed">0</div>
+                        <div class="stat-name">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-number" id="stat-streak">0</div>
+                        <div class="stat-name">Day Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-number" id="stat-level">1</div>
+                        <div class="stat-name">Level</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-number" id="stat-total">0</div>
+                        <div class="stat-name">Total Quests</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <script>
-        const input = document.getElementById('todo-input');
-        const btn = document.getElementById('add-btn');
-        const list = document.getElementById('todo-list');
-
-        btn.addEventListener('click', addTask);
-        input.addEventListener('keydown', e => {
-            if (e.key === 'Enter') addTask();
-        });
-
-        function addTask() {
-            const text = input.value.trim();
-            if (!text) return;
-            const li = document.createElement('li');
-            const span = document.createElement('span');
-            span.textContent = text;
-            li.appendChild(span);
-            const del = document.createElement('button');
-            del.textContent = 'X';
-            del.addEventListener('click', () => li.remove());
-            li.addEventListener('click', () => li.classList.toggle('completed'));
-            li.appendChild(del);
-            list.appendChild(li);
-            input.value = '';
-        }
-    </script>
+    <script src="todo.js"></script>
 </body>
 </html>
