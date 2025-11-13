@@ -1,138 +1,326 @@
-/* Compact mode tweaks (no transform to preserve scrolling) */
+/* ============================================================================
+   Main Landing Page - Modern Redesign
+   ============================================================================ */
+
 html {
-  height: 100%;
-  width: 100%;
+    scroll-behavior: smooth;
+    height: 100%;
 }
+
 body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: #0a0a0a;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    overflow-x: hidden;
+    position: relative;
+}
 
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #1e1e2f;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
-            flex-direction: column;
-        }
-        .intro {
-            font-size: 4rem;
-            font-weight: bold;
-            display: flex;
-            gap: 0.2em;
-            flex-wrap: wrap;
-            text-align: center;
-        }
-        .intro span {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.5s ease-in-out forwards;
-        }
-        .resume {
-            opacity: 0;
-            font-size: 2rem;
-            text-align: center;
-            margin-top: 2rem;
-            animation: fadeIn 1s ease-in-out forwards;
-            animation-delay: 1s;
-        }
-        .code-snippet {
-            position: absolute;
-            color: #4cafef;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            animation: floatSnippet 3s ease-in-out forwards;
-        }
+/* Animated Background */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(29, 185, 84, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(30, 215, 96, 0.08) 0%, transparent 50%),
+        linear-gradient(180deg, #0a0a0a 0%, #121212 100%);
+    pointer-events: none;
+}
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+/* Main Container */
+.main-container {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
 
-        @keyframes floatSnippet {
-            0% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-        }
+/* Hero Section */
+.hero {
+    text-align: center;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
 
-        .link-section {
-            margin-top: 3rem;
-            text-align: center;
-            font-size: 1.5rem;
-        }
+.hero-content {
+    max-width: 800px;
+}
 
-        .link-section a {
-            display: inline-block;
-            margin: 0 10px;
-            transition: transform 0.3s ease;
-        }
+.hero-name {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
 
-        .link-section a img {
-            width: 50px;
-            height: 50px;
-        }
+.name-letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(30px) rotateX(90deg);
+    animation: letterFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
 
-        .link-section a:hover {
-            transform: scale(1.2);
-        }
+@keyframes letterFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
+}
 
-        .fadeInSection {
-            opacity: 0;
-            animation: fadeInSection 1s ease-in-out forwards;
-        }
+.hero-tagline {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    color: rgba(255, 255, 255, 0.7);
+    margin: 24px 0 0;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.5s forwards;
+}
 
-        @keyframes fadeInSection {
-            0% {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        .animated-header {
-            font-size: 2.5rem;
-            animation: colorChange 3s infinite alternate;
-        }
+/* Content Section */
+.content {
+    width: 100%;
+    max-width: 1200px;
+    opacity: 0;
+    transform: translateY(20px);
+}
 
-        @keyframes colorChange {
-            0% {
-                color: #4cafef;
-            }
-            100% {
-                color: #f54291;
-            }
-        }
+.content-wrapper {
+    text-align: center;
+}
 
-        @media screen and (max-width: 768px) {
-            .intro {
-                font-size: 2.5rem;
-            }
-            .link-section a img {
-                width: 40px;
-                height: 40px;
-            }
-        }
+.content-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin: 0 0 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #1db954 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+}
 
-        @media screen and (max-width: 480px) {
-            .intro {
-                font-size: 2rem;
-            }
-            .resume {
-                font-size: 1.5rem;
-            }
-        }
+.content-description {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 48px;
+    font-weight: 400;
+}
+
+/* Projects Grid */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 64px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.project-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    text-decoration: none;
+    color: #ffffff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(29, 185, 84, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.project-card:hover::before {
+    left: 100%;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(29, 185, 84, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.project-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.project-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.project-icon svg {
+    width: 100%;
+    height: 100%;
+    color: #1db954;
+}
+
+.project-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: #ffffff;
+}
+
+.project-description {
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Social Section */
+.social-section {
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.social-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 32px;
+    color: #ffffff;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    text-decoration: none;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(29, 185, 84, 0.3);
+    transform: translateY(-4px);
+}
+
+.social-link svg {
+    color: #1db954;
+    transition: transform 0.3s ease;
+}
+
+.social-link:hover svg {
+    transform: scale(1.1);
+}
+
+.social-icon-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.social-link span {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 20px 16px;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .project-card {
+        padding: 24px 20px;
+    }
+
+    .social-links {
+        gap: 16px;
+    }
+
+    .social-link {
+        min-width: 100px;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-name {
+        font-size: 2.5rem;
+    }
+
+    .hero-tagline {
+        font-size: 1rem;
+    }
+
+    .content-title {
+        font-size: 1.75rem;
+    }
+
+    .project-title {
+        font-size: 1.25rem;
+    }
+}
 
 /* ============================================================================
    Spotify Stats - Complete Redesign
