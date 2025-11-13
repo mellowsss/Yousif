@@ -6,128 +6,131 @@
     <title>Spotify Stats</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="spotify-body">
-    <!-- Gradient Background -->
-    <div class="gradient-bg"></div>
+<body>
+    <div class="background"></div>
     
-    <!-- Header -->
-    <header class="spotify-header">
-        <div class="header-content">
-            <div class="logo-container">
-                <img src="spotify.svg" alt="Spotify">
-                <span class="header-title">Spotify Stats</span>
+    <header class="header">
+        <div class="header-container">
+            <div class="header-brand">
+                <img src="spotify.svg" alt="Spotify" class="header-logo">
+                <h1 class="header-title">Spotify Stats</h1>
             </div>
         </div>
     </header>
 
-    <main id="app">
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="hero-content">
-                <button id="login-btn" class="spotify-login-btn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-                    </svg>
-                    <span>Connect to Spotify</span>
-                </button>
+    <main class="main">
+        <!-- Login Section -->
+        <section class="login-section" id="login-section">
+            <div class="login-container">
+                <div class="login-content">
+                    <h2 class="login-title">Discover Your Music</h2>
+                    <p class="login-subtitle">See your most played tracks and artists</p>
+                    <button id="login-btn" class="login-button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+                        </svg>
+                        <span>Connect with Spotify</span>
+                    </button>
+                </div>
             </div>
         </section>
 
-        <!-- Controls Section -->
-        <section id="controls" class="controls-section" style="display:none;">
-            <div class="time-range-container">
-                <label for="range-select" class="control-label">Time Range</label>
-                <select id="range-select" class="select-input">
-                    <option value="short_term">Last 4 weeks</option>
-                    <option value="medium_term">Last 6 months</option>
-                    <option value="long_term">All time</option>
-                </select>
+        <!-- Dashboard Section -->
+        <section class="dashboard" id="dashboard" style="display: none;">
+            <!-- Controls -->
+            <div class="dashboard-controls">
+                <div class="time-range-wrapper">
+                    <label for="range-select" class="time-range-label">Time Period</label>
+                    <select id="range-select" class="time-range-select">
+                        <option value="short_term">Last 4 weeks</option>
+                        <option value="medium_term">Last 6 months</option>
+                        <option value="long_term">All time</option>
+                    </select>
+                </div>
+
+                <nav class="tabs">
+                    <button class="tab-button active" data-tab="tracks">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        <span>Tracks</span>
+                    </button>
+                    <button class="tab-button" data-tab="artists">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>Artists</span>
+                    </button>
+                    <button class="tab-button" data-tab="grouped-tracks">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>Grouped Tracks</span>
+                    </button>
+                    <button class="tab-button" data-tab="grouped-artists">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>Grouped Artists</span>
+                    </button>
+                </nav>
             </div>
 
-            <!-- Tab Navigation -->
-            <div class="tabs-container">
-                <button class="tab-btn active" data-tab="tracks">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    <span>Top Tracks</span>
-                </button>
-                <button class="tab-btn" data-tab="artists">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                    <span>Top Artists</span>
-                </button>
-                <button class="tab-btn" data-tab="grouped-tracks">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
-                    </svg>
-                    <span>Grouped Tracks</span>
-                </button>
-                <button class="tab-btn" data-tab="grouped-artists">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
-                    </svg>
-                    <span>Grouped Artists</span>
-                </button>
+            <!-- Content Area -->
+            <div class="dashboard-content">
+                <!-- Tracks Tab -->
+                <div class="tab-panel active" id="tab-tracks">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Top Tracks</h2>
+                        <p class="panel-subtitle">Your most played songs</p>
+                    </div>
+                    <div class="items-list" id="tracks-list"></div>
+                </div>
+
+                <!-- Artists Tab -->
+                <div class="tab-panel" id="tab-artists">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Top Artists</h2>
+                        <p class="panel-subtitle">Your most played artists</p>
+                    </div>
+                    <div class="items-list" id="artists-list"></div>
+                </div>
+
+                <!-- Grouped Tracks Tab -->
+                <div class="tab-panel" id="tab-grouped-tracks">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Grouped Tracks</h2>
+                        <p class="panel-subtitle">Compare across time periods</p>
+                    </div>
+                    <div id="grouped-tracks-content"></div>
+                </div>
+
+                <!-- Grouped Artists Tab -->
+                <div class="tab-panel" id="tab-grouped-artists">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Grouped Artists</h2>
+                        <p class="panel-subtitle">Compare across time periods</p>
+                    </div>
+                    <div id="grouped-artists-content"></div>
+                </div>
             </div>
         </section>
-
-        <!-- Tab Content Sections -->
-        <section id="results" class="results-section">
-            <!-- Top Tracks Tab -->
-            <div class="tab-content active" id="tab-tracks">
-                <div class="content-header">
-                    <h2>Top 100 Tracks</h2>
-                    <p class="content-subtitle">Your most played tracks</p>
-                </div>
-                <div class="list" id="tracks-list"></div>
-            </div>
-
-            <!-- Top Artists Tab -->
-            <div class="tab-content" id="tab-artists">
-                <div class="content-header">
-                    <h2>Top 100 Artists</h2>
-                    <p class="content-subtitle">Your most played artists</p>
-                </div>
-                <div class="list" id="artists-list"></div>
-            </div>
-
-            <!-- Grouped Tracks Tab -->
-            <div class="tab-content" id="tab-grouped-tracks">
-                <div class="content-header">
-                    <h2>Grouped Tracks</h2>
-                    <p class="content-subtitle">Compare tracks across different time periods</p>
-                </div>
-                <div id="grouped-tracks-content"></div>
-            </div>
-
-            <!-- Grouped Artists Tab -->
-            <div class="tab-content" id="tab-grouped-artists">
-                <div class="content-header">
-                    <h2>Grouped Artists</h2>
-                    <p class="content-subtitle">Compare artists across different time periods</p>
-                </div>
-                <div id="grouped-artists-content"></div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="footer-section">
-            <p class="footer-text">Using Spotify's Authorization Code flow with PKCE for secure authentication</p>
-        </footer>
     </main>
+
+    <footer class="footer">
+        <p class="footer-text">Secured with Spotify's PKCE authentication</p>
+    </footer>
 
     <script src="spotify.js"></script>
 </body>

@@ -134,285 +134,251 @@ body {
             }
         }
 
-/* Spotify page styles - Modern Redesign */
+/* ============================================================================
+   Spotify Stats - Complete Redesign
+   ============================================================================ */
+
 html {
     scroll-behavior: smooth;
-    overflow-y: scroll;
 }
 
-.spotify-body {
+body {
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: #121212;
-    color: #fff;
+    color: #ffffff;
     min-height: 100vh;
     overflow-x: hidden;
-    overflow-y: scroll;
-    position: relative;
+    line-height: 1.5;
 }
 
-/* Animated Gradient Background */
-.gradient-bg {
+/* Background */
+.background {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 0;
-    background: 
-        radial-gradient(circle at 20% 50%, rgba(29, 185, 84, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(30, 215, 96, 0.1) 0%, transparent 50%),
-        linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
-    background-size: 100% 100%;
+    background: linear-gradient(180deg, #121212 0%, #1a1a1a 100%);
+    pointer-events: none;
 }
 
-.gradient-bg::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        radial-gradient(circle at 50% 50%, rgba(29, 185, 84, 0.05) 0%, transparent 70%);
-    animation: pulse 8s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Header - Spotify Style */
-.spotify-header {
+/* Header */
+.header {
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(20px);
     background: rgba(18, 18, 18, 0.8);
+    backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 12px 0;
+    padding: 16px 0;
     transition: all 0.3s ease;
 }
 
-.spotify-header.scrolled {
+.header.scrolled {
     background: rgba(18, 18, 18, 0.95);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-.header-content {
+.header-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 24px;
-    width: 100%;
+    padding: 0 32px;
 }
 
-.logo-container {
+.header-brand {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.logo-container img {
+.header-logo {
     width: 32px;
     height: 32px;
 }
 
 .header-title {
-    font-size: 1rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    color: #fff;
+    color: #ffffff;
     margin: 0;
     letter-spacing: -0.02em;
 }
 
-/* Main App Container */
-#app {
+/* Main Container */
+.main {
     position: relative;
     z-index: 1;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0;
-    width: 100%;
+    padding: 0 32px;
+    min-height: calc(100vh - 200px);
 }
 
-/* Hero Section - Spotify Style */
-.hero-section {
+/* Login Section */
+.login-section {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 60vh;
-    padding: 60px 20px 40px;
-    position: relative;
+    min-height: 70vh;
+    padding: 80px 0;
 }
 
-.hero-content {
-    text-align: center;
-    max-width: 500px;
+.login-container {
     width: 100%;
-    opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
+    max-width: 500px;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.login-content {
+    text-align: center;
 }
 
-/* Spotify Login Button */
-.spotify-login-btn {
+.login-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin: 0 0 16px;
+    letter-spacing: -0.03em;
+}
+
+.login-subtitle {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 40px;
+    font-weight: 400;
+}
+
+.login-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
     background: #1db954;
-    color: #000;
+    color: #000000;
     border: none;
-    padding: 14px 32px;
+    padding: 16px 40px;
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
     border-radius: 500px;
     transition: all 0.2s ease;
-    text-transform: none;
-    letter-spacing: normal;
 }
 
-.spotify-login-btn:hover {
+.login-button:hover {
     background: #1ed760;
     transform: scale(1.05);
 }
 
-.spotify-login-btn:active {
+.login-button:active {
     transform: scale(1);
-    background: #1aa34a;
 }
 
-.spotify-login-btn svg {
+.login-button svg {
     flex-shrink: 0;
 }
 
-/* Controls Section */
-.controls-section {
-    margin: 40px 0 30px;
-    opacity: 0;
-    animation: fadeInUp 0.8s ease 0.2s forwards;
-    padding: 0 24px;
+/* Dashboard */
+.dashboard {
+    padding: 40px 0 80px;
 }
 
-.time-range-container {
+.dashboard-controls {
+    margin-bottom: 40px;
+}
+
+.time-range-wrapper {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
     align-items: center;
 }
 
-.control-label {
+.time-range-label {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.6);
     font-weight: 500;
 }
 
-.select-input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 12px;
+.time-range-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 12px 48px 12px 20px;
+    border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
-    padding-right: 45px;
 }
 
-.select-input:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+.time-range-select:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
-.select-input:focus {
+.time-range-select:focus {
     outline: none;
     border-color: #1db954;
     box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.2);
 }
 
-/* Tabs Container */
-.tabs-container {
+/* Tabs */
+.tabs {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 0;
 }
 
-.tab-btn {
+.tab-button {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    padding: 14px 24px;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     white-space: nowrap;
 }
 
-.tab-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+.tab-button:hover {
+    background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
 }
 
-.tab-btn.active {
-    background: linear-gradient(135deg, #1db954, #1ed760);
-    color: #000;
-    border-color: transparent;
-    box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
+.tab-button.active {
+    background: #1db954;
+    color: #000000;
+    border-color: #1db954;
 }
 
-.tab-btn svg {
+.tab-button svg {
     flex-shrink: 0;
 }
 
-/* Results Section */
-.results-section {
-    margin: 0;
-    min-height: 400px;
-    padding: 0 24px 80px;
-    position: relative;
-    z-index: 1;
-    width: 100%;
+/* Dashboard Content */
+.dashboard-content {
+    margin-top: 40px;
 }
 
-/* Tab Content */
-.tab-content {
+.tab-panel {
     display: none;
-    animation: fadeIn 0.4s ease;
 }
 
-.tab-content.active {
+.tab-panel.active {
     display: block;
+    animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
@@ -420,209 +386,183 @@ html {
     to { opacity: 1; }
 }
 
-.content-header {
-    text-align: left;
-    margin-bottom: 24px;
-    padding: 0;
-    max-width: 100%;
+.panel-header {
+    margin-bottom: 32px;
 }
 
-.content-header h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
+.panel-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
     margin: 0 0 8px;
-    color: #fff;
-    text-align: left;
+    letter-spacing: -0.02em;
 }
 
-.content-subtitle {
-    font-size: 0.875rem;
+.panel-subtitle {
+    font-size: 0.9375rem;
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
-    text-align: left;
 }
 
-/* List Grid - Spotify Style */
-.list {
+/* Items List */
+.items-list {
     display: flex;
     flex-direction: column;
     gap: 0;
-    margin-top: 0;
-    padding: 0;
-    width: 100%;
-    max-width: 100%;
 }
 
-/* Track/Artist Cards - Spotify Style */
-.track-card,
-.artist-card {
+/* Item Cards */
+.item-card {
     display: flex;
     align-items: center;
     gap: 16px;
-    background: transparent;
-    padding: 8px 12px;
-    border-radius: 4px;
+    padding: 12px;
+    border-radius: 8px;
     transition: background-color 0.2s ease;
     cursor: pointer;
-    position: relative;
-    width: 100%;
-    max-width: 100%;
 }
 
-.track-card:hover,
-.artist-card:hover {
+.item-card:hover {
     background: rgba(255, 255, 255, 0.1);
 }
 
-.track-card:hover .card-rank,
-.artist-card:hover .card-rank {
+.item-card:hover .item-rank {
     opacity: 0;
 }
 
-.track-card:hover .preview-btn,
-.artist-card:hover .preview-btn {
+.item-card:hover .item-preview {
     opacity: 1;
 }
 
-.preview-btn-placeholder {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-}
-
-.card-rank {
+.item-rank {
     font-size: 1rem;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.6);
-    min-width: 40px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    min-width: 32px;
     text-align: center;
     flex-shrink: 0;
     transition: opacity 0.2s ease;
 }
 
-.card-image-link {
+.item-image-link {
     display: block;
     flex-shrink: 0;
     text-decoration: none;
 }
 
-.card-image {
+.item-image {
     width: 56px;
     height: 56px;
-    border-radius: 4px;
+    border-radius: 6px;
     object-fit: cover;
-    transition: transform 0.2s ease;
     flex-shrink: 0;
 }
 
-.track-card:hover .card-image,
-.artist-card:hover .card-image {
-    transform: scale(1);
-}
-
-.card-info {
+.item-info {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
     min-width: 0;
 }
 
-.card-title {
+.item-name {
     font-size: 1rem;
-    font-weight: 400;
-    color: #fff;
+    font-weight: 500;
+    color: #ffffff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.5;
+    margin-bottom: 4px;
 }
 
-.card-subtitle {
+.item-artist {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.6);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: 4px;
 }
 
-.preview-btn {
-    margin-left: auto;
-    background: transparent;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
+.item-preview {
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: transparent;
+    border: none;
+    color: #ffffff;
     cursor: pointer;
+    border-radius: 50%;
     transition: all 0.2s ease;
-    flex-shrink: 0;
     opacity: 0;
+    flex-shrink: 0;
 }
 
-.preview-btn:hover {
+.item-preview:hover {
     background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.1);
     color: #1db954;
+    transform: scale(1.1);
+}
+
+.item-preview-placeholder {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
 }
 
 /* Group Sections */
 .group-section {
-    margin-bottom: 60px;
-    opacity: 0;
-    animation: fadeInUp 0.6s ease forwards;
-    width: 100%;
+    margin-bottom: 64px;
 }
 
-.group-section:nth-child(1) { animation-delay: 0.1s; }
-.group-section:nth-child(2) { animation-delay: 0.2s; }
-.group-section:nth-child(3) { animation-delay: 0.3s; }
-
-.group-section .list {
-    padding: 0;
+.group-section:last-child {
+    margin-bottom: 0;
 }
 
 .group-title {
     font-size: 1.5rem;
     font-weight: 700;
+    color: #ffffff;
     margin: 0 0 24px;
     padding-bottom: 16px;
     border-bottom: 2px solid rgba(29, 185, 84, 0.3);
-    color: #fff;
 }
 
-/* Loading and Error States */
+/* Loading & Error States */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 0;
+}
+
 .loading-spinner {
-    width: 50px;
-    height: 50px;
-    margin: 60px auto;
+    width: 48px;
+    height: 48px;
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-top-color: #1db954;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
-.error-message {
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.error {
     text-align: center;
-    padding: 40px;
+    padding: 60px 20px;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 /* Footer */
-.footer-section {
+.footer {
+    position: relative;
+    z-index: 1;
     text-align: center;
-    padding: 40px 24px;
+    padding: 40px 32px;
     margin-top: 80px;
-    opacity: 0;
-    animation: fadeInUp 0.8s ease 0.4s forwards;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer-text {
@@ -631,58 +571,40 @@ html {
     margin: 0;
 }
 
-/* Loading State */
-.results-section::before {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 40px;
-    margin: 60px auto;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #1db954;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    opacity: 0;
-}
-
-.results-section.loading::before {
-    opacity: 1;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Responsive */
+/* Responsive Design */
 @media (max-width: 768px) {
-    .hero-section {
-        padding: 60px 20px 40px;
+    .header-container,
+    .main {
+        padding: 0 20px;
     }
-    
-    .controls-container {
-        flex-direction: column;
-        align-items: stretch;
+
+    .login-title {
+        font-size: 2rem;
     }
-    
-    .view-buttons,
-    .action-buttons {
-        width: 100%;
+
+    .login-subtitle {
+        font-size: 1rem;
     }
-    
-    .view-btn,
-    .action-btn {
-        flex: 1;
-        justify-content: center;
+
+    .tabs {
+        gap: 6px;
     }
-    
-    .track,
-    .artist {
-        padding: 12px;
+
+    .tab-button {
+        padding: 10px 16px;
+        font-size: 0.875rem;
     }
-    
-    .track img,
-    .artist img {
-        width: 56px;
-        height: 56px;
+
+    .panel-title {
+        font-size: 1.5rem;
+    }
+
+    .item-card {
+        padding: 10px;
+    }
+
+    .item-image {
+        width: 48px;
+        height: 48px;
     }
 }
