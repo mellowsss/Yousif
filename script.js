@@ -1,7 +1,3 @@
-// ============================================================================
-// Main Landing Page - Smooth Animations
-// ============================================================================
-
 const state = {
     name: "Yousif Saieb",
     isAnimating: false
@@ -17,7 +13,8 @@ const elements = {
 function animateName() {
     const nameContainer = elements.heroName;
     nameContainer.innerHTML = '';
-    
+
+    nameContainer.classList.add('cyber-glitch');
     state.name.split('').forEach((letter, index) => {
         const span = document.createElement('span');
         span.className = 'name-letter';
